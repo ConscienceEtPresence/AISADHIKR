@@ -1864,7 +1864,7 @@ function startApp() {
       
       // Au bout de 6 secondes, on lance la procédure d'arrêt
       setTimeout(() => {
-          let steps = 20; // Compteur de sécurité pour les téléphones
+          lwet steps = 20; // Compteur de sécurité pour les téléphones
           let fadeAudio = setInterval(() => {
               // 1. On essaie de baisser le son (marche sur PC)
               if (audio.volume > 0.05) {
@@ -1891,13 +1891,6 @@ function startApp() {
   }, 600);
 }
 
-  intro.classList.add('fade-out');
-  setTimeout(() => {
-    app.classList.add('visible');
-    loadChapter(0);
-    renderToc();
-  }, 600);
-}
 function renderCurrentPage() {
   const container = document.getElementById('bookContainer');
   const ch = DATA[state.chapter];
