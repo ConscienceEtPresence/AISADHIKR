@@ -1857,24 +1857,39 @@ function startApp() {
   const app = document.getElementById('app');
   const audio = document.getElementById('introMusic');
 
-  // On lance la musique doucement
+  // Lancement de la musique
   if (audio) {
-      audio.volume = 0.4; // Volume à 40%
+      audio.volume = 0.4; 
       audio.play().catch(e => console.log("Audio bloqué par le navigateur"));
       
-      // On baisse le son doucement après 6 secondes pour l'arrêter
+      // Au bout de 6 secondes, on lance la procédure d'arrêt
       setTimeout(() => {
+          let steps = 20; // Compteur de sécurité pour les téléphones
           let fadeAudio = setInterval(() => {
+              // 1. On essaie de baisser le son (marche sur PC)
               if (audio.volume > 0.05) {
-                  audio.volume -= 0.05; 
-              } else {
-                  clearInterval(fadeAudio);
-                  audio.pause(); 
-                  audio.currentTime = 0; 
+                  try { audio.volume -= 0.05; } catch(e) {}
               }
-          }, 200); 
-      }, 6000); // La musique dure 6 secondes
+              
+              steps--; // On enlève 1 au compteur à chaque fois
+
+              // 2. Si le compteur est fini OU si le son est coupé : ON ARRÊTE TOUT
+              if (steps <= 0 || audio.volume <= 0.05) {
+                  clearInterval(fadeAudio);
+                  audio.pause();         // On force la pause
+                  audio.currentTime = 0; // On rembobine
+              }
+          }, 100); 
+      }, 6000); 
   }
+
+  intro.classList.add('fade-out');
+  setTimeout(() => {
+    app.classList.add('visible');
+    loadChapter(0);
+    renderToc();
+  }, 600);
+}
 
   intro.classList.add('fade-out');
   setTimeout(() => {
