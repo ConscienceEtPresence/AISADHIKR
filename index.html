@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Le Dhikr - Source de tout bien</title>
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#0f172a" id="metaTheme" />
   <meta name="description" content="Le Dhikr est source de tout bien - Voie Alawiyya">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -14,7 +14,6 @@
   <meta property="og:image" content="logo.png" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="logo.png" />
-
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WRV6BTZ5XB"></script>
 <script>
@@ -23,12 +22,11 @@
   gtag('js', new Date());
   gtag('config', 'G-WRV6BTZ5XB');
 </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
-
   <style>
+    /* ========== THEME SOMBRE (defaut) ========== */
     :root {
       --bg-color: #0f172a;
       --card-bg: #1e293b;
@@ -38,6 +36,12 @@
       --accent-gold-light: #f3e5ab;
       --accent-gold-dim: #8a7018;
       --accent-gold-transparent: rgba(212, 175, 55, 0.2);
+      --overlay-bg: rgba(15, 23, 42, 0.98);
+      --settings-bg: #263346;
+      --toggle-bg: #3c4b61;
+      --border-subtle: rgba(255,255,255,0.03);
+      --border-light: rgba(255,255,255,0.1);
+      --shadow-card: rgba(0,0,0,0.5);
       --font-ar: 'Amiri', serif;
       --font-fr: 'Inter', sans-serif;
       --font-title: 'Cinzel', serif;
@@ -48,10 +52,27 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
+      --font-scale: 1;
+    }
+    /* ========== THEME CLAIR ========== */
+    .theme-light {
+      --bg-color: #f5f0e8;
+      --card-bg: #fffdf7;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-gold: #b8941e;
+      --accent-gold-light: #d4af37;
+      --accent-gold-dim: #c4a42a;
+      --accent-gold-transparent: rgba(184, 148, 30, 0.15);
+      --overlay-bg: rgba(245, 240, 232, 0.98);
+      --settings-bg: #ede8dc;
+      --toggle-bg: #cbd5e1;
+      --border-subtle: rgba(0,0,0,0.05);
+      --border-light: rgba(0,0,0,0.1);
+      --shadow-card: rgba(0,0,0,0.15);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
     body, html {
       margin: 0; padding: 0; height: 100%; overflow: hidden;
       font-family: var(--font-fr);
@@ -59,89 +80,65 @@
       color: var(--text-main);
       overscroll-behavior: none;
       -webkit-overflow-scrolling: touch;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
-    /* --- PAGE D'ACCUEIL (INTRO) --- */
+    /* --- INTRO --- */
     #intro {
       position: fixed; inset: 0; z-index: 300;
       background: radial-gradient(circle at center, var(--card-bg) 0%, var(--bg-color) 100%);
       display: flex; flex-direction: column;
       justify-content: center; align-items: center;
-      text-align: center;
-      padding: 20px;
+      text-align: center; padding: 20px;
       padding-top: calc(20px + var(--safe-top));
       transition: opacity 1s ease, transform 1s ease;
       will-change: opacity, transform;
     }
     #intro.fade-out { opacity: 0; pointer-events: none; transform: scale(1.05); }
-
     .intro-content {
       flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
       width: 100%; max-width: 600px;
     }
-
-    .intro-logo-img {
-      width: 45px; height: auto;
-      margin-top: 30px; margin-bottom: 10px; opacity: 0.9;
-    }
-
+    .intro-logo-img { width: 45px; height: auto; margin-top: 30px; margin-bottom: 10px; opacity: 0.9; }
     .intro-symbol {
       font-size: clamp(2rem, 5vw, 2.5rem); color: var(--accent-gold); margin-bottom: 20px; opacity: 0.8;
-      animation: pulse 3s infinite ease-in-out;
-      will-change: opacity, transform;
+      animation: pulse 3s infinite ease-in-out; will-change: opacity, transform;
     }
-
     .ar-title {
       font-family: var(--font-ar); font-size: clamp(1.8rem, 6vw, 2.8rem); line-height: 1.4; color: var(--accent-gold);
       font-weight: 700; margin: 0 0 10px 0; text-shadow: 0 0 20px var(--accent-gold-transparent);
     }
     [lang="ar"] { direction: rtl; }
-
     .ar-subtitle {
       font-family: var(--font-ar); font-size: clamp(0.9rem, 2.5vw, 1.1rem); color: var(--text-muted);
       margin-bottom: 40px; font-weight: 400; letter-spacing: 0.5px;
     }
-
     .fr-title {
-      font-family: var(--font-title);
-      font-size: clamp(1rem, 3vw, 1.3rem);
-      text-transform: uppercase;
-      letter-spacing: clamp(1px, 0.5vw, 3px);
-      color: var(--text-main);
-      margin: 0 0 15px 0;
+      font-family: var(--font-title); font-size: clamp(1rem, 3vw, 1.3rem);
+      text-transform: uppercase; letter-spacing: clamp(1px, 0.5vw, 3px);
+      color: var(--text-main); margin: 0 0 15px 0;
       border-top: 1px solid rgba(212, 175, 55, 0.3);
       border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-      padding: 15px 0;
-      width: 100%;
+      padding: 15px 0; width: 100%;
     }
     .fr-subtitle {
       font-family: var(--font-fr); font-size: 0.9rem; font-weight: 300;
       color: var(--text-muted); font-style: italic; line-height: 1.6; max-width: 80%;
     }
-
     .btn-enter {
       margin-top: 40px; padding: 14px 50px; background: transparent;
       border: 1px solid var(--accent-gold); color: var(--accent-gold);
       font-family: var(--font-title); font-size: 0.9rem; letter-spacing: 2px;
       text-transform: uppercase; cursor: pointer; border-radius: 2px;
-      transition: all 0.4s ease;
-      min-height: 48px;
+      transition: all 0.4s ease; min-height: 48px;
     }
     .btn-enter:hover, .btn-enter:focus-visible {
-      background: rgba(212, 175, 55, 0.1);
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+      background: var(--accent-gold-transparent); box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
     }
-
     .intro-footer {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      opacity: 0.5;
-      font-family: var(--font-fr);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 20px;
+      font-size: 0.65rem; color: var(--text-muted); opacity: 0.5;
+      font-family: var(--font-fr); letter-spacing: 1px; text-transform: uppercase; margin-top: 20px;
     }
-
     @keyframes pulse {
       0%, 100% { opacity: 0.6; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.1); }
@@ -151,233 +148,272 @@
     #app {
       display: flex; flex-direction: column; height: 100%;
       position: relative; overflow: hidden; opacity: 0; transition: opacity 1s ease;
-      padding-top: var(--safe-top);
-      padding-bottom: var(--safe-bottom);
-      padding-left: var(--safe-left);
-      padding-right: var(--safe-right);
+      padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);
+      padding-left: var(--safe-left); padding-right: var(--safe-right);
     }
     #app.visible { opacity: 1; }
 
+    /* TOPBAR */
     .topbar {
       height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; z-index: 100; flex-shrink: 0;
+      padding: 0 15px; z-index: 100; flex-shrink: 0;
     }
-    .brand {
-      font-family: var(--font-title); color: var(--accent-gold);
-      font-size: 1rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
-      cursor: pointer; background: none; border: none; padding: 8px 4px;
-      min-height: 44px;
+    .topbar-left { display: flex; align-items: center; gap: 8px; }
+    .topbar-center {
+      flex: 1; text-align: center; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 0 8px;
     }
-    .nav-logo-img { height: 24px; width: auto; }
-    .menu-btn {
-      background: none; border: none; color: var(--text-muted);
-      font-size: 1.4rem; cursor: pointer; padding: 8px;
-      min-width: 44px; min-height: 44px;
-      display: grid; place-items: center;
-      border-radius: 8px;
-      transition: background 0.2s;
+    .topbar-chapter {
+      font-family: var(--font-title); font-size: 0.7rem; color: var(--accent-gold);
+      letter-spacing: 1px; text-transform: uppercase;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     }
-    .menu-btn:hover, .menu-btn:focus-visible {
-      background: rgba(255,255,255,0.05);
+    .topbar-page {
+      font-size: 0.65rem; color: var(--text-muted); margin-top: 1px;
     }
-    .menu-btn:active {
-      background: rgba(255,255,255,0.1);
-    }
+    .topbar-right { display: flex; align-items: center; gap: 6px; }
 
+    .icon-btn {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 1.2rem; cursor: pointer; padding: 6px;
+      min-width: 40px; min-height: 40px;
+      display: grid; place-items: center; border-radius: 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .icon-btn:hover, .icon-btn:focus-visible { background: rgba(128,128,128,0.1); }
+    .icon-btn:active { background: rgba(128,128,128,0.2); }
+    .icon-btn.active { color: var(--accent-gold); }
+    .nav-logo-img { height: 22px; width: auto; }
+
+    /* BOOK CONTAINER */
     .book-container {
       flex: 1; position: relative; perspective: 1000px;
       display: flex; align-items: center; justify-content: center;
-      touch-action: pan-y;
-      overflow: hidden;
+      touch-action: pan-y; overflow: hidden;
     }
 
+    /* PAGE CARD */
     .page-card {
-      position: absolute; width: 88%; max-width: 550px;
-      height: 78%;
-      background: var(--card-bg); border-radius: 12px;
-      padding: 10px 15px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-      display: flex; flex-direction: column;
-      align-items: center;
-      text-align: center;
+      position: absolute; width: 90%; max-width: 550px; height: 80%;
+      background: var(--card-bg); border-radius: 12px; padding: 12px 16px;
+      box-shadow: 0 25px 50px -12px var(--shadow-card);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
       transition: transform 0.5s var(--ease-spring), opacity 0.4s ease;
-      border: 1px solid rgba(255,255,255,0.03);
-      overflow-y: auto;
-      scrollbar-width: thin;
+      border: 1px solid var(--border-subtle);
+      overflow-y: auto; scrollbar-width: thin;
       scrollbar-color: var(--accent-gold-dim) transparent;
       will-change: transform, opacity;
     }
     .card-content-wrapper {
-      margin: auto;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: auto; width: 100%;
+      display: flex; flex-direction: column; align-items: center;
     }
-    .long-text-fr {
-      text-align: justify;
-      text-justify: inter-word;
-      line-height: 1.6;
-      font-size: 1rem;
-      padding: 0 5px;
-    }
-    .page-card.active { transform: translate3d(0, 0, 0) scale(1); opacity: 1; z-index: 10; }
-    .page-card.slide-out-left { transform: translate3d(-120%, 0, -100px) rotateY(10deg); opacity: 0; z-index: 5; }
-    .page-card.slide-out-right { transform: translate3d(120%, 0, -100px) rotateY(-10deg); opacity: 0; z-index: 5; }
-    .page-card.next { transform: translate3d(0, 0, -60px) scale(0.92); opacity: 0.3; z-index: 5; cursor: pointer; }
+    .page-card.active { transform: translate3d(0,0,0) scale(1); opacity: 1; z-index: 10; }
+    .page-card.slide-out-left { transform: translate3d(-120%,0,-100px) rotateY(10deg); opacity: 0; z-index: 5; }
+    .page-card.slide-out-right { transform: translate3d(120%,0,-100px) rotateY(-10deg); opacity: 0; z-index: 5; }
+    .page-card.next { transform: translate3d(0,0,-60px) scale(0.92); opacity: 0.3; z-index: 5; cursor: pointer; }
+    /* Swipe drag */
+    .page-card.dragging { transition: none !important; }
 
     .card-img {
-      width: 100px; height: 100px; border-radius: 50%; object-fit: contain;
-      background: rgba(0,0,0,0.2);
-      margin-bottom: 15px; border: 1px solid var(--accent-gold);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3); padding: 5px;
-      flex-shrink: 0;
+      width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
+      background: rgba(0,0,0,0.2); margin-bottom: 15px;
+      border: 2px solid var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      padding: 4px; flex-shrink: 0;
     }
+    .card-img.card-img-portrait { width: 180px; height: 180px; }
 
-    /* STYLES POUR LES PAGES DE TITRE */
+    /* TITRES */
     .title-page-ar {
       font-family: var(--font-ar); font-size: clamp(2rem, 6vw, 3rem); color: var(--accent-gold);
-      line-height: 1.2; margin-bottom: 20px; text-shadow: 0 0 30px var(--accent-gold-transparent);
-      direction: rtl;
+      line-height: 1.2; margin-bottom: 20px; text-shadow: 0 0 30px var(--accent-gold-transparent); direction: rtl;
     }
-    .title-page-divider {
-      font-size: 2rem; color: var(--text-muted); opacity: 0.5; margin: 15px 0;
-    }
+    .title-page-divider { font-size: 2rem; color: var(--text-muted); opacity: 0.5; margin: 15px 0; }
     .title-page-fr {
       font-family: var(--font-title); font-size: clamp(1rem, 3vw, 1.3rem); color: var(--text-main);
       text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px;
     }
-    .title-page-sub {
-      font-family: var(--font-fr); font-size: 0.9rem; color: var(--text-muted); font-style: italic;
-    }
+    .title-page-sub { font-family: var(--font-fr); font-size: 0.9rem; color: var(--text-muted); font-style: italic; }
 
-    /* STYLES POUR LES PAGES DE CITATION */
+    /* CITATIONS */
     .quote-ar {
       font-family: var(--font-ar); font-size: clamp(1.6rem, 4.5vw, 2.2rem); color: var(--accent-gold);
       line-height: 1.6; margin-bottom: 25px; direction: rtl;
       text-shadow: 0 0 10px var(--accent-gold-transparent);
     }
-    .quote-fr {
-      font-family: var(--font-fr); font-size: 1.1rem; color: var(--text-main);
-      font-style: italic; line-height: 1.6; margin-bottom: 15px;
-      font-weight: 300;
-    }
-    .quote-ref {
-      font-family: var(--font-title); font-size: 0.9rem; color: var(--text-muted);
-      margin-top: 20px; letter-spacing: 1px;
-    }
-    .quote-decoration {
-      font-size: 2rem; color: var(--accent-gold-dim); margin: 20px 0; opacity: 0.7;
-    }
+    .quote-fr { font-family: var(--font-fr); font-size: 1.1rem; color: var(--text-main); font-style: italic; line-height: 1.6; margin-bottom: 15px; font-weight: 300; }
+    .quote-ref { font-family: var(--font-title); font-size: 0.9rem; color: var(--text-muted); margin-top: 20px; letter-spacing: 1px; }
+    .quote-decoration { font-size: 2rem; color: var(--accent-gold-dim); margin: 20px 0; opacity: 0.7; }
 
+    /* VERSETS */
     .verse-ar {
-      font-family: var(--font-ar); font-size: clamp(1.3rem, 3.5vw, 1.6rem); line-height: 1.8;
+      font-family: var(--font-ar); font-size: calc(clamp(1.3rem, 3.5vw, 1.6rem) * var(--font-scale)); line-height: 1.8;
       color: var(--accent-gold); margin-bottom: 20px; direction: rtl;
+      transition: font-size 0.3s ease;
     }
-    .verse-tr {
-      font-size: 0.9rem; color: var(--text-muted); font-style: italic; margin-bottom: 15px;
-    }
-    .verse-fr { font-size: 1rem; color: var(--text-main); line-height: 1.5; }
+    .verse-tr { font-size: calc(0.9rem * var(--font-scale)); color: var(--text-muted); font-style: italic; margin-bottom: 15px; }
+    .verse-fr { font-size: calc(1rem * var(--font-scale)); color: var(--text-main); line-height: 1.5; }
+    .verse-separator { width: 40px; height: 1px; background: var(--accent-gold-dim); margin: 5px auto 15px; opacity: 0.4; }
 
-    /* Scrollbar Styling */
-    .scrollable-content {
-      overflow-y: auto; width: 100%; flex: 1;
-      padding: 10px 5px; margin-top: 10px;
-      scrollbar-width: thin; scrollbar-color: var(--accent-gold-dim) transparent;
+    /* ARABE SEUL = plus gros */
+    .arabic-only .verse-ar {
+      font-size: calc(clamp(2rem, 6vw, 2.8rem) * var(--font-scale));
+      line-height: 2; margin-bottom: 10px;
     }
-
-    .long-text-ar {
-      font-family: var(--font-ar); font-size: 1.3rem; line-height: 2;
-      color: var(--text-main); text-align: justify; direction: rtl;
+    .arabic-only .quote-ar {
+      font-size: calc(clamp(2.2rem, 6vw, 3rem) * var(--font-scale));
+      line-height: 1.8;
     }
-
-    .long-text-fr a {
-      color: var(--accent-gold); text-decoration: none; border-bottom: 1px dashed var(--accent-gold); transition: all 0.2s;
+    .arabic-only .long-text-ar {
+      font-size: calc(1.6rem * var(--font-scale));
+      line-height: 2.2;
     }
-    .long-text-fr a:hover { color: #fff; border-bottom-style: solid; }
-
-    .bismillah {
-      font-family: var(--font-ar); color: var(--accent-gold); font-size: 1.4rem; margin-bottom: 25px; opacity: 0.7;
+    .arabic-only .title-page-ar {
+      font-size: clamp(2.5rem, 8vw, 4rem);
     }
 
+    /* SCROLLABLE / LONG TEXT */
+    .scrollable-content { overflow-y: auto; width: 100%; flex: 1; padding: 10px 5px; margin-top: 10px; scrollbar-width: thin; scrollbar-color: var(--accent-gold-dim) transparent; }
+    .long-text-fr { text-align: justify; text-justify: inter-word; line-height: 1.6; font-size: calc(1rem * var(--font-scale)); padding: 0 5px; }
+    .long-text-ar { font-family: var(--font-ar); font-size: calc(1.3rem * var(--font-scale)); line-height: 2; color: var(--text-main); text-align: justify; direction: rtl; }
+    .long-text-fr a { color: var(--accent-gold); text-decoration: none; border-bottom: 1px dashed var(--accent-gold); transition: all 0.2s; }
+    .long-text-fr a:hover { color: var(--text-main); border-bottom-style: solid; }
+    .bismillah { font-family: var(--font-ar); color: var(--accent-gold); font-size: 1.4rem; margin-bottom: 25px; opacity: 0.7; }
+
+    /* NAVBAR */
     .nav-bar {
-      height: var(--navbar-h); display: flex; align-items: center; justify-content: center; gap: 25px;
+      height: var(--navbar-h); display: flex; align-items: center; justify-content: center; gap: 20px;
       background: linear-gradient(to top, var(--bg-color) 20%, transparent);
-      z-index: 50; flex-shrink: 0;
-      padding-bottom: 10px;
+      z-index: 50; flex-shrink: 0; padding-bottom: 10px; position: relative;
     }
     .nav-btn {
       width: 48px; height: 48px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-subtle); background: rgba(128,128,128,0.05);
       color: var(--text-muted); font-size: 1.1rem; cursor: pointer;
       display: grid; place-items: center; transition: all 0.2s;
     }
     .nav-btn:active { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
-    .nav-btn:focus-visible {
-      outline: 2px solid var(--accent-gold);
-      outline-offset: 2px;
-    }
+    .nav-btn:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
     .nav-btn.main-action {
-      width: 55px; height: 55px; background: rgba(212, 175, 55, 0.1);
+      width: 55px; height: 55px; background: var(--accent-gold-transparent);
       color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.3);
+      position: relative; overflow: hidden;
     }
+    /* Timer ring pour auto-play */
+    .timer-ring {
+      position: absolute; inset: -2px; border-radius: 50%;
+      border: 3px solid transparent; border-top-color: var(--accent-gold);
+      animation: timer-spin linear infinite; opacity: 0; pointer-events: none;
+    }
+    .auto-playing .timer-ring { opacity: 1; }
+    @keyframes timer-spin { to { transform: rotate(360deg); } }
 
     .progress-line {
-      position: absolute; bottom: 0; left: 0; height: 2px;
-      background: var(--accent-gold);
-      width: 100%;
+      position: absolute; bottom: 0; left: 0; height: 3px;
+      background: var(--accent-gold); width: 100%;
       transform: scaleX(0); transform-origin: left;
-      transition: transform 0.4s ease;
-      z-index: 100; opacity: 0.7;
+      transition: transform 0.4s ease; z-index: 100; opacity: 0.8;
     }
 
-    /* Sommaire & Settings */
+    /* SHARE TOAST */
+    .share-toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--accent-gold); color: #000; padding: 10px 24px; border-radius: 25px;
+      font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s; z-index: 500;
+    }
+    .share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* SEARCH OVERLAY */
+    .search-overlay {
+      position: fixed; inset: 0; background: var(--overlay-bg); z-index: 250;
+      display: none; flex-direction: column; padding: 20px;
+      padding-top: calc(20px + var(--safe-top));
+    }
+    .search-overlay.open { display: flex; }
+    .search-bar {
+      display: flex; gap: 10px; margin-bottom: 15px; align-items: center;
+    }
+    .search-input {
+      flex: 1; background: var(--card-bg); border: 1px solid var(--border-light);
+      color: var(--text-main); padding: 12px 16px; border-radius: 10px;
+      font-size: 1rem; font-family: var(--font-fr); outline: none;
+    }
+    .search-input:focus { border-color: var(--accent-gold); }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-results {
+      flex: 1; overflow-y: auto; list-style: none; padding: 0; margin: 0;
+    }
+    .search-result-item {
+      padding: 14px 10px; border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer; transition: background 0.2s;
+    }
+    .search-result-item:hover { background: var(--accent-gold-transparent); }
+    .search-result-chapter { font-size: 0.7rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .search-result-text { font-size: 0.9rem; color: var(--text-main); line-height: 1.4; }
+    .search-result-text mark { background: var(--accent-gold-transparent); color: var(--accent-gold); border-radius: 2px; padding: 0 2px; }
+    .search-empty { text-align: center; color: var(--text-muted); margin-top: 40px; font-style: italic; }
+
+    /* SOMMAIRE & SETTINGS */
     .overlay-menu {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 200;
+      position: fixed; inset: 0; background: var(--overlay-bg); z-index: 200;
       transform: translateY(100%); transition: transform 0.5s var(--ease-spring);
-      padding: 30px 20px;
-      padding-top: calc(30px + var(--safe-top));
+      padding: 30px 20px; padding-top: calc(30px + var(--safe-top));
       padding-bottom: calc(20px + var(--safe-bottom));
-      display: flex; flex-direction: column;
-      will-change: transform;
+      display: flex; flex-direction: column; will-change: transform;
     }
     .overlay-menu.open { transform: translateY(0); }
-    .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+    .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; }
     .menu-title { font-family: var(--font-title); font-size: 1.4rem; color: var(--accent-gold); }
     .close-btn {
       background: none; border: none; color: var(--text-main); font-size: 1.8rem; cursor: pointer;
-      min-width: 44px; min-height: 44px;
-      display: grid; place-items: center;
-      border-radius: 8px;
-      transition: background 0.2s;
+      min-width: 44px; min-height: 44px; display: grid; place-items: center;
+      border-radius: 8px; transition: background 0.2s;
     }
-    .close-btn:hover, .close-btn:focus-visible { background: rgba(255,255,255,0.05); }
-
+    .close-btn:hover, .close-btn:focus-visible { background: rgba(128,128,128,0.1); }
     .toc-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
     .toc-item {
-      padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
-      cursor: pointer; display: flex; flex-direction: row; justify-content: space-between; align-items: center;
-      transition: color 0.2s;
-      min-height: 48px;
+      padding: 12px 0; border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer; display: flex; align-items: center; gap: 12px;
+      transition: color 0.2s; min-height: 48px;
     }
     .toc-item:hover { color: var(--accent-gold); }
     .toc-item.active-chapter { color: var(--accent-gold); }
-    .toc-titles { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .toc-ar { font-family: var(--font-ar); font-size: 1.1rem; direction: rtl; text-align: right; }
-    .toc-fr { font-size: 0.8rem; color: var(--text-muted); text-align: left; }
+    .toc-titles { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .toc-ar { font-family: var(--font-ar); font-size: 1.05rem; direction: rtl; text-align: right; }
+    .toc-fr { font-size: 0.75rem; color: var(--text-muted); text-align: left; }
+    .toc-progress {
+      width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+      font-size: 0.6rem; color: var(--text-muted); flex-shrink: 0;
+      background: conic-gradient(var(--accent-gold) var(--pct, 0%), var(--border-subtle) 0%);
+      position: relative;
+    }
+    .toc-progress-inner {
+      width: 26px; height: 26px; border-radius: 50%; background: var(--overlay-bg);
+      display: grid; place-items: center;
+    }
+    .toc-bookmark { color: var(--accent-gold); font-size: 0.8rem; flex-shrink: 0; }
 
     .settings-panel {
-      position: absolute; top: calc(var(--topbar-h) + 10px); right: 20px; background: #263346;
-      border-radius: 12px; padding: 20px; width: 220px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6); opacity: 0; pointer-events: none;
+      position: absolute; top: calc(var(--topbar-h) + 10px); right: 15px; background: var(--settings-bg);
+      border-radius: 12px; padding: 18px; width: 250px;
+      box-shadow: 0 10px 40px var(--shadow-card); opacity: 0; pointer-events: none;
       transform: translateY(-10px); transition: all 0.3s ease; z-index: 90;
     }
     .settings-panel.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-    .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 0.95rem; }
+    .settings-section { margin-bottom: 18px; }
+    .settings-section:last-child { margin-bottom: 0; }
+    .settings-label {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-muted); margin-bottom: 10px; font-weight: 600;
+    }
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.9rem; }
+    .toggle-row:last-child { margin-bottom: 0; }
     .toggle-switch {
-      width: 44px; height: 28px; background: #3c4b61; border-radius: 20px; position: relative; cursor: pointer;
-      border: none; padding: 0;
-      min-width: 44px; min-height: 28px;
+      width: 44px; height: 28px; background: var(--toggle-bg); border-radius: 20px;
+      position: relative; cursor: pointer; border: none; padding: 0; min-width: 44px; min-height: 28px;
+      transition: background 0.3s;
     }
     .toggle-switch::after {
       content:''; position: absolute; top: 4px; left: 4px;
@@ -385,86 +421,79 @@
     }
     .toggle-switch.on { background: var(--accent-gold); }
     .toggle-switch.on::after { transform: translateX(16px); background: #000; }
-    .settings-backdrop {
-      position: fixed; inset: 0; z-index: 89; display: none;
-    }
+    .settings-backdrop { position: fixed; inset: 0; z-index: 89; display: none; }
     .settings-backdrop.show { display: block; }
 
-    /* Focus visible global */
-    :focus-visible {
-      outline: 2px solid var(--accent-gold);
-      outline-offset: 2px;
+    /* Font size control */
+    .font-size-control { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .font-size-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-light);
+      background: transparent; color: var(--text-main); font-size: 1rem; cursor: pointer;
+      display: grid; place-items: center; transition: all 0.2s;
     }
-    :focus:not(:focus-visible) {
-      outline: none;
+    .font-size-btn:active { background: var(--accent-gold); color: #000; }
+    .font-size-label { font-size: 0.85rem; color: var(--text-muted); min-width: 40px; text-align: center; }
+
+    /* Speed control */
+    .speed-control { display: flex; align-items: center; gap: 8px; }
+    .speed-btn {
+      padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border-light);
+      background: transparent; color: var(--text-muted); font-size: 0.75rem; cursor: pointer;
+      transition: all 0.2s;
     }
+    .speed-btn.active { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
+
+    /* Focus */
+    :focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
+    :focus:not(:focus-visible) { outline: none; }
 
     /* ========== RESPONSIVE ========== */
-
-    /* Petits telephones (< 380px) */
     @media (max-width: 380px) {
-      :root {
-        --topbar-h: 50px;
-        --navbar-h: 70px;
-      }
+      :root { --topbar-h: 50px; --navbar-h: 70px; }
       .ar-title { margin-bottom: 5px; }
       .ar-subtitle { margin-bottom: 20px; }
       .fr-subtitle { font-size: 0.8rem; max-width: 95%; }
       .btn-enter { padding: 12px 35px; margin-top: 25px; }
-      .page-card { width: 92%; padding: 8px 10px; height: 80%; }
-      .verse-ar { margin-bottom: 12px; }
-      .quote-fr { font-size: 1rem; }
-      .nav-bar { gap: 15px; }
-      .topbar { padding: 0 12px; }
-      .brand { font-size: 0.85rem; }
-      .settings-panel { right: 10px; width: 200px; }
+      .page-card { width: 94%; padding: 8px 10px; height: 82%; }
+      .nav-bar { gap: 12px; }
+      .topbar { padding: 0 10px; }
+      .topbar-chapter { font-size: 0.6rem; }
+      .settings-panel { right: 8px; width: 230px; }
     }
-
-    /* Telephones moyens (381px - 480px) */
     @media (min-width: 381px) and (max-width: 480px) {
-      .page-card { width: 90%; height: 78%; }
+      .page-card { width: 92%; height: 80%; }
     }
-
-    /* Tablettes (481px - 1024px) */
     @media (min-width: 481px) and (max-width: 1024px) {
-      .page-card { max-width: 600px; height: 80%; max-height: 750px; }
-      .topbar { padding: 0 30px; }
+      .page-card { max-width: 600px; height: 82%; max-height: 750px; }
+      .topbar { padding: 0 25px; }
       .nav-bar { gap: 30px; }
     }
-
-    /* Desktop (> 1024px) */
     @media (min-width: 1025px) {
-      .page-card { max-width: 650px; height: 82%; max-height: 800px; }
+      .page-card { max-width: 650px; height: 84%; max-height: 800px; }
       .topbar { padding: 0 40px; }
       .nav-bar { gap: 35px; }
       .intro-content { max-width: 700px; }
     }
-
-    /* Paysage sur telephone */
     @media (max-height: 500px) and (orientation: landscape) {
-      :root {
-        --topbar-h: 45px;
-        --navbar-h: 55px;
-      }
-      .page-card { height: 85%; max-height: none; }
+      :root { --topbar-h: 42px; --navbar-h: 50px; }
+      .page-card { height: 88%; max-height: none; }
       .intro-symbol { margin-bottom: 10px; }
       .ar-subtitle { margin-bottom: 15px; }
       .btn-enter { margin-top: 15px; padding: 10px 30px; }
       .nav-btn { width: 40px; height: 40px; }
-      .nav-btn.main-action { width: 48px; height: 48px; }
+      .nav-btn.main-action { width: 46px; height: 46px; }
     }
   </style>
 </head>
 <body>
-
   <div id="intro" role="dialog" aria-label="Page d'accueil">
     <div class="intro-content">
-      <div class="intro-symbol" aria-hidden="true" id="introSymbol">&#1758;</div>
+      <div class="intro-symbol" aria-hidden="true">&#1758;</div>
       <h1 class="ar-title" lang="ar" dir="rtl">&#1575;&#1604;&#1584;&#1603;&#1585; &#1575;&#1587;&#1576;&#1575;&#1576; &#1603;&#1604; &#1582;&#1610;&#1585;</h1>
       <p class="ar-subtitle" lang="ar" dir="rtl">&#1605;&#1602;&#1578;&#1591;&#1601;&#1575;&#1578; &#1605;&#1606; &#1571;&#1608;&#1585;&#1575;&#1583; &#1608;&#1571;&#1583;&#1593;&#1610;&#1577; &#1575;&#1604;&#1591;&#1585;&#1610;&#1602;&#1577; &#1575;&#1604;&#1593;&#1604;&#1575;&#1608;&#1610;&#1577; &#1575;&#1604;&#1583;&#1585;&#1602;&#1575;&#1608;&#1610;&#1577; &#1575;&#1604;&#1588;&#1575;&#1584;&#1604;&#1610;&#1577;</p>
       <h2 class="fr-title">Le Dhikr est source de tout bien</h2>
       <p class="fr-subtitle">Extraits de l'invocation et des prieres de la voie Alawiyya Darqawiyya Shadhiliyya</p>
-      <button class="btn-enter" id="btnEnter" aria-label="Entrer dans l'application">Entrer</button>
+      <button class="btn-enter" id="btnEnter">Entrer</button>
       <img src="logo.png" alt="Logo AISA" class="intro-logo-img" width="45" height="45" onerror="this.style.display='none'">
       <p class="intro-footer">Association Internationale Soufie Alawiyya | ONG AISA</p>
     </div>
@@ -472,38 +501,61 @@
 
   <main id="app" role="main">
     <header class="topbar">
-      <button class="brand" id="btnBrand" aria-label="Ouvrir le sommaire">
-        <img src="logo.png" alt="" class="nav-logo-img" width="24" height="24" onerror="this.style.display='none'; document.getElementById('fallbackIcon').style.display='inline'">
-        <span id="fallbackIcon" style="display:none" aria-hidden="true">&#128214;</span> Dhikr
-      </button>
-      <div style="display:flex; gap:10px;">
-        <button class="menu-btn" id="btnSettings" aria-label="Parametres d'affichage">&#9881;&#65039;</button>
-        <button class="menu-btn" id="btnMenu" aria-label="Ouvrir le sommaire">&#9776;</button>
+      <div class="topbar-left">
+        <button class="icon-btn" id="btnHome" aria-label="Accueil">
+          <img src="logo.png" alt="" class="nav-logo-img" width="22" height="22" onerror="this.style.display='none'; this.parentElement.textContent='&#128214;'">
+        </button>
+      </div>
+      <div class="topbar-center">
+        <div class="topbar-chapter" id="topbarChapter"></div>
+        <div class="topbar-page" id="topbarPage"></div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="btnSearch" aria-label="Rechercher">&#128269;</button>
+        <button class="icon-btn" id="btnBookmark" aria-label="Ajouter aux favoris">&#9734;</button>
+        <button class="icon-btn" id="btnShare" aria-label="Partager ce verset">&#8599;</button>
+        <button class="icon-btn" id="btnSettings" aria-label="Parametres">&#9881;&#65039;</button>
+        <button class="icon-btn" id="btnMenu" aria-label="Sommaire">&#9776;</button>
       </div>
     </header>
 
     <div class="settings-backdrop" id="settingsBackdrop"></div>
     <div class="settings-panel" id="settingsPanel" role="region" aria-label="Parametres">
-      <div class="toggle-row">
-        <span id="labelAr">Arabe</span>
-        <button class="toggle-switch on" id="toggleAr" role="switch" aria-checked="true" aria-labelledby="labelAr"></button>
+      <div class="settings-section">
+        <div class="settings-label">Affichage</div>
+        <div class="toggle-row"><span id="labelAr">Arabe</span><button class="toggle-switch on" id="toggleAr" role="switch" aria-checked="true" aria-labelledby="labelAr"></button></div>
+        <div class="toggle-row"><span id="labelTr">Phonetique</span><button class="toggle-switch on" id="toggleTr" role="switch" aria-checked="true" aria-labelledby="labelTr"></button></div>
+        <div class="toggle-row"><span id="labelFr">Francais</span><button class="toggle-switch on" id="toggleFr" role="switch" aria-checked="true" aria-labelledby="labelFr"></button></div>
       </div>
-      <div class="toggle-row">
-        <span id="labelTr">Phonetique</span>
-        <button class="toggle-switch on" id="toggleTr" role="switch" aria-checked="true" aria-labelledby="labelTr"></button>
+      <div class="settings-section">
+        <div class="settings-label">Taille du texte</div>
+        <div class="font-size-control">
+          <button class="font-size-btn" id="btnFontMinus" aria-label="Reduire la police">A-</button>
+          <span class="font-size-label" id="fontSizeLabel">100%</span>
+          <button class="font-size-btn" id="btnFontPlus" aria-label="Agrandir la police">A+</button>
+        </div>
       </div>
-      <div class="toggle-row">
-        <span id="labelFr">Francais</span>
-        <button class="toggle-switch on" id="toggleFr" role="switch" aria-checked="true" aria-labelledby="labelFr"></button>
+      <div class="settings-section">
+        <div class="settings-label">Lecture auto (secondes)</div>
+        <div class="speed-control" id="speedControl">
+          <button class="speed-btn" data-speed="3">3s</button>
+          <button class="speed-btn active" data-speed="5">5s</button>
+          <button class="speed-btn" data-speed="8">8s</button>
+          <button class="speed-btn" data-speed="15">15s</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-label">Theme</div>
+        <div class="toggle-row"><span id="labelTheme">Mode clair</span><button class="toggle-switch" id="toggleTheme" role="switch" aria-checked="false" aria-labelledby="labelTheme"></button></div>
       </div>
     </div>
 
     <section class="book-container" id="bookContainer" aria-live="polite" aria-label="Contenu de lecture"></section>
     <div class="progress-line" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
-    <nav class="nav-bar" aria-label="Navigation des pages">
+    <nav class="nav-bar" aria-label="Navigation">
       <button class="nav-btn" id="btnPrev" aria-label="Page precedente">&#8592;</button>
-      <button class="nav-btn main-action" id="btnPlay" aria-label="Lecture automatique">&#9654;</button>
+      <button class="nav-btn main-action" id="btnPlay" aria-label="Lecture automatique">&#9654;<span class="timer-ring"></span></button>
       <button class="nav-btn" id="btnNext" aria-label="Page suivante">&#8594;</button>
     </nav>
   </main>
@@ -511,406 +563,508 @@
   <div class="overlay-menu" id="tocMenu" role="dialog" aria-label="Sommaire" aria-modal="true">
     <div class="menu-header">
       <div class="menu-title">Sommaire / <span lang="ar" dir="rtl">&#1601;&#1607;&#1585;&#1587;</span></div>
-      <button class="close-btn" id="btnCloseToc" aria-label="Fermer le sommaire">&times;</button>
+      <button class="close-btn" id="btnCloseToc" aria-label="Fermer">&times;</button>
     </div>
     <ul class="toc-list" id="tocList" role="list"></ul>
   </div>
 
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-bar">
+      <input class="search-input" id="searchInput" type="text" placeholder="Rechercher un texte..." autocomplete="off" />
+      <button class="close-btn" id="btnCloseSearch" aria-label="Fermer la recherche">&times;</button>
+    </div>
+    <ul class="search-results" id="searchResults"></ul>
+  </div>
+
+  <div class="share-toast" id="shareToast">Texte copie !</div>
+
 <script src="data.js"></script>
 <script>
-/* --- CONSTANTES --- */
-const ANIM_DURATION = 400;
-const AUTOPLAY_INTERVAL = 5000;
-const SWIPE_THRESHOLD = 50;
-const STORAGE_KEY = 'aisadhikr_state';
+/* ===== CONSTANTES ===== */
+var ANIM_DURATION = 400;
+var SWIPE_THRESHOLD = 50;
+var STORAGE_KEY = 'aisadhikr_state';
+var FONT_STEPS = [0.8, 0.9, 1, 1.1, 1.25, 1.4];
+var SPEED_OPTIONS = [3, 5, 8, 15];
 
-/* --- STATE --- */
-let state = {
-  chapter: 0,
-  page: 0,
+/* ===== STATE ===== */
+var state = {
+  chapter: 0, page: 0,
   settings: { showAr: true, showTr: true, showFr: true },
-  autoPlay: false
+  autoPlay: false,
+  fontStep: 2,
+  speed: 5,
+  theme: 'dark',
+  bookmarks: [],
+  chapterProgress: {}
 };
+var interval = null;
+var isAnimating = false;
 
-let interval = null;
-let isAnimating = false;
-
-/* --- PERSISTANCE localStorage --- */
+/* ===== PERSISTENCE ===== */
 function saveState() {
   try {
+    // Sauver la progression du chapitre actuel
+    var ch = DATA[state.chapter];
+    state.chapterProgress[state.chapter] = Math.min(state.page + 1, ch.content.length);
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      chapter: state.chapter,
-      page: state.page,
-      settings: state.settings
+      chapter: state.chapter, page: state.page,
+      settings: state.settings, fontStep: state.fontStep,
+      speed: state.speed, theme: state.theme,
+      bookmarks: state.bookmarks, chapterProgress: state.chapterProgress
     }));
-  } catch(e) { /* quota exceeded or private mode */ }
+  } catch(e) {}
 }
-
 function loadState() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed.chapter < DATA.length) {
-        state.chapter = parsed.chapter;
-        const ch = DATA[state.chapter];
-        if (parsed.page < ch.content.length) {
-          state.page = parsed.page;
-        }
-      }
-      if (parsed.settings) {
-        state.settings = { ...state.settings, ...parsed.settings };
-      }
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    var p = JSON.parse(saved);
+    if (p.chapter < DATA.length) {
+      state.chapter = p.chapter;
+      if (p.page < DATA[state.chapter].content.length) state.page = p.page;
     }
-  } catch(e) { /* corrupted data */ }
+    if (p.settings) state.settings = Object.assign({}, state.settings, p.settings);
+    if (typeof p.fontStep === 'number') state.fontStep = p.fontStep;
+    if (typeof p.speed === 'number') state.speed = p.speed;
+    if (p.theme) state.theme = p.theme;
+    if (Array.isArray(p.bookmarks)) state.bookmarks = p.bookmarks;
+    if (p.chapterProgress) state.chapterProgress = p.chapterProgress;
+  } catch(e) {}
 }
 
-/* --- INITIALISATION --- */
+/* ===== INIT ===== */
 function startApp() {
-  const intro = document.getElementById('intro');
-  const app = document.getElementById('app');
-
+  var intro = document.getElementById('intro');
+  var app = document.getElementById('app');
   intro.classList.add('fade-out');
-  setTimeout(() => {
+  setTimeout(function() {
     app.classList.add('visible');
     intro.style.display = 'none';
     loadChapter(state.chapter, state.page);
     renderToc();
-    syncToggles();
+    syncAll();
   }, 600);
 }
 
+function syncAll() {
+  syncToggles();
+  applyTheme();
+  applyFontScale();
+  syncSpeedButtons();
+}
+
 function syncToggles() {
-  const map = { showAr: 'toggleAr', showTr: 'toggleTr', showFr: 'toggleFr' };
-  for (const [key, id] of Object.entries(map)) {
-    const el = document.getElementById(id);
-    if (state.settings[key]) {
-      el.classList.add('on');
-      el.setAttribute('aria-checked', 'true');
-    } else {
-      el.classList.remove('on');
-      el.setAttribute('aria-checked', 'false');
-    }
+  var map = { showAr: 'toggleAr', showTr: 'toggleTr', showFr: 'toggleFr' };
+  for (var key in map) {
+    var el = document.getElementById(map[key]);
+    if (state.settings[key]) { el.classList.add('on'); el.setAttribute('aria-checked','true'); }
+    else { el.classList.remove('on'); el.setAttribute('aria-checked','false'); }
   }
 }
 
-/* --- RENDU --- */
+function applyTheme() {
+  if (state.theme === 'light') {
+    document.body.classList.add('theme-light');
+    document.getElementById('toggleTheme').classList.add('on');
+    document.getElementById('toggleTheme').setAttribute('aria-checked','true');
+    document.getElementById('metaTheme').setAttribute('content','#f5f0e8');
+  } else {
+    document.body.classList.remove('theme-light');
+    document.getElementById('toggleTheme').classList.remove('on');
+    document.getElementById('toggleTheme').setAttribute('aria-checked','false');
+    document.getElementById('metaTheme').setAttribute('content','#0f172a');
+  }
+}
+
+function applyFontScale() {
+  var scale = FONT_STEPS[state.fontStep] || 1;
+  document.documentElement.style.setProperty('--font-scale', scale);
+  document.getElementById('fontSizeLabel').textContent = Math.round(scale * 100) + '%';
+}
+
+function syncSpeedButtons() {
+  var btns = document.querySelectorAll('#speedControl .speed-btn');
+  btns.forEach(function(b) {
+    b.classList.toggle('active', parseInt(b.dataset.speed) === state.speed);
+  });
+  // Update timer ring animation duration
+  document.querySelector('.timer-ring').style.animationDuration = state.speed + 's';
+}
+
+/* ===== TOPBAR UPDATE ===== */
+function updateTopbar() {
+  var ch = DATA[state.chapter];
+  document.getElementById('topbarChapter').textContent = ch.desc;
+  document.getElementById('topbarPage').textContent = (state.page + 1) + ' / ' + ch.content.length;
+  // Bookmark icon
+  var bk = isBookmarked(state.chapter, state.page);
+  var btn = document.getElementById('btnBookmark');
+  btn.textContent = bk ? '\u2605' : '\u2606';
+  btn.classList.toggle('active', bk);
+}
+
+/* ===== RENDU ===== */
 function renderCurrentPage() {
-  const container = document.getElementById('bookContainer');
-  const ch = DATA[state.chapter];
-  const item = ch.content[state.page];
-  const progressBar = document.getElementById('progressBar');
+  var container = document.getElementById('bookContainer');
+  var ch = DATA[state.chapter];
+  var item = ch.content[state.page];
+
+  // Determine si on est en mode arabe seul
+  var arOnly = state.settings.showAr && !state.settings.showTr && !state.settings.showFr;
+  container.className = 'book-container' + (arOnly ? ' arabic-only' : '');
 
   container.innerHTML = '';
-
-  const card = document.createElement('div');
+  var card = document.createElement('div');
   card.className = 'page-card active';
+  var html = '<div class="card-content-wrapper">';
 
-  let html = '<div class="card-content-wrapper">';
-
-  // CAS 1: PAGE DE CITATION
   if (item.isQuote) {
     html += '<div class="quote-decoration" aria-hidden="true">&#1758;</div>';
     if (state.settings.showAr) html += '<div class="quote-ar" lang="ar" dir="rtl">' + item.ar + '</div>';
     if (state.settings.showFr) html += '<div class="quote-fr">' + item.fr + '</div>';
     if (item.sub) html += '<div class="quote-ref">' + item.sub + '</div>';
     html += '<div class="quote-decoration" aria-hidden="true" style="transform:rotate(180deg)">&#1758;</div>';
-    html += '</div>';
-    card.innerHTML = html;
-    container.appendChild(card);
-    updateProgress(ch);
-    saveState();
-    return;
+    html += '</div>'; card.innerHTML = html; container.appendChild(card);
+    updateProgress(ch); updateTopbar(); saveState(); return;
   }
 
-  // CAS 2: PAGE DE TITRE
   if (item.isTitlePage) {
     html += '<div class="title-page-ar" lang="ar" dir="rtl">' + item.ar + '</div>';
     html += '<div class="title-page-divider" aria-hidden="true">&#1758;</div>';
     html += '<div class="title-page-fr">' + item.fr + '</div>';
     if (item.sub) html += '<div class="title-page-sub">' + item.sub + '</div>';
-    html += '</div>';
-    card.innerHTML = html;
-    container.appendChild(card);
-    updateProgress(ch);
-    saveState();
-    return;
+    html += '</div>'; card.innerHTML = html; container.appendChild(card);
+    updateProgress(ch); updateTopbar(); saveState(); return;
   }
 
-  // CAS 3: PAGE NORMALE
   if (state.page === 0 && !item.isLongText && !item.isQuote) {
     html += '<div class="bismillah" aria-hidden="true">&#1758;</div>';
-    html += '<h3 style="color:var(--accent-gold); margin:0 0 5px 0; font-family:var(--font-ar); direction:rtl; font-size:1.6rem;" lang="ar" dir="rtl">' + ch.title + '</h3>';
-    html += '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:25px; font-style:italic;">' + ch.desc + '</p>';
+    html += '<h3 style="color:var(--accent-gold);margin:0 0 5px 0;font-family:var(--font-ar);direction:rtl;font-size:1.6rem;" lang="ar" dir="rtl">' + ch.title + '</h3>';
+    html += '<p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:25px;font-style:italic;">' + ch.desc + '</p>';
   }
-
   if (item.img) {
-    html += '<img src="' + item.img + '" class="card-img" alt="" width="100" height="100" onerror="this.style.display=\'none\'" />';
+    var isPortrait = item.img.indexOf('cheikh') !== -1;
+    html += '<img src="' + item.img + '" class="card-img' + (isPortrait ? ' card-img-portrait' : '') + '" alt="" width="' + (isPortrait ? '180' : '140') + '" height="' + (isPortrait ? '180' : '140') + '" onerror="this.style.display=\'none\'" />';
   }
+  if (item.isLongText) html += '<div class="scrollable-content">';
 
-  if (item.isLongText) {
-    html += '<div class="scrollable-content">';
-  }
-
-  /* --- LOGIQUE D'AFFICHAGE DU CONTENU --- */
   if (ch.id === 'preface') {
-    if (state.settings.showFr && item.fr) {
-      html += '<div class="long-text-fr">' + item.fr + '</div>';
-    }
-    if (state.settings.showAr && item.arBody) {
-      html += '<div class="long-text-ar" lang="ar" dir="rtl">' + item.arBody + '</div>';
-    }
+    if (state.settings.showFr && item.fr) html += '<div class="long-text-fr">' + item.fr + '</div>';
+    if (state.settings.showAr && item.arBody) html += '<div class="long-text-ar" lang="ar" dir="rtl">' + item.arBody + '</div>';
   } else {
     if (state.settings.showAr) {
       if (item.arBody) html += '<div class="long-text-ar" lang="ar" dir="rtl">' + item.arBody + '</div><br>';
       else if (item.ar) {
-        if (item.isLongText) html += '<h3 style="color:var(--accent-gold); font-family:var(--font-ar); margin:5px 0; direction:rtl;" lang="ar" dir="rtl">' + item.ar + '</h3>';
+        if (item.isLongText) html += '<h3 style="color:var(--accent-gold);font-family:var(--font-ar);margin:5px 0;direction:rtl;" lang="ar" dir="rtl">' + item.ar + '</h3>';
         else html += '<div class="verse-ar" lang="ar" dir="rtl">' + item.ar + '</div>';
       }
     }
-
-    if (state.settings.showTr && item.tr) {
-      if (!item.isLongText) html += '<div class="verse-tr">' + item.tr + '</div>';
+    // Separateur visuel
+    if (state.settings.showAr && (state.settings.showTr || state.settings.showFr) && !item.isLongText && item.ar) {
+      html += '<div class="verse-separator"></div>';
     }
-
+    if (state.settings.showTr && item.tr && !item.isLongText) html += '<div class="verse-tr">' + item.tr + '</div>';
     if (state.settings.showFr && item.fr) {
       if (item.isLongText) html += '<div class="long-text-fr">' + item.fr + '</div>';
       else html += '<div class="verse-fr">' + item.fr + '</div>';
     }
   }
-
-  if (item.isLongText) {
-    html += '</div>';
-  }
+  if (item.isLongText) html += '</div>';
   html += '</div>';
   card.innerHTML = html;
 
   if (state.page < ch.content.length - 1) {
-    const next = document.createElement('div');
-    next.className = 'page-card next';
-    next.setAttribute('aria-hidden', 'true');
-    next.innerHTML = '<div style="opacity:0.5; font-size:2rem;">...</div>';
+    var next = document.createElement('div');
+    next.className = 'page-card next'; next.setAttribute('aria-hidden','true');
+    next.innerHTML = '<div style="opacity:0.5;font-size:2rem;">...</div>';
     container.appendChild(next);
   }
   container.appendChild(card);
-
-  updateProgress(ch);
-  saveState();
+  updateProgress(ch); updateTopbar(); saveState();
 }
 
 function updateProgress(ch) {
-  const progressBar = document.getElementById('progressBar');
-  const pct = ((state.page + 1) / ch.content.length);
-  progressBar.style.transform = 'scaleX(' + pct + ')';
-  progressBar.setAttribute('aria-valuenow', Math.round(pct * 100));
+  var pct = (state.page + 1) / ch.content.length;
+  var bar = document.getElementById('progressBar');
+  bar.style.transform = 'scaleX(' + pct + ')';
+  bar.setAttribute('aria-valuenow', Math.round(pct * 100));
 }
 
-/* --- NAVIGATION --- */
+/* ===== NAVIGATION ===== */
 function nextPage() {
   if (isAnimating) return;
-  const ch = DATA[state.chapter];
+  var ch = DATA[state.chapter];
   if (state.page < ch.content.length - 1) {
     isAnimating = true;
-    const current = document.querySelector('.page-card.active');
-    if (current) {
-      current.classList.remove('active');
-      current.classList.add('slide-out-left');
-    }
-    setTimeout(function() {
-      state.page++;
-      renderCurrentPage();
-      isAnimating = false;
-    }, ANIM_DURATION);
+    var cur = document.querySelector('.page-card.active');
+    if (cur) { cur.classList.remove('active'); cur.classList.add('slide-out-left'); }
+    setTimeout(function() { state.page++; renderCurrentPage(); isAnimating = false; }, ANIM_DURATION);
   } else if (state.chapter < DATA.length - 1) {
     loadChapter(state.chapter + 1);
-  } else if (state.autoPlay) {
-    // Fin du livre : arreter l'auto-play
-    togglePlay();
-  }
+  } else if (state.autoPlay) { togglePlay(); }
 }
-
 function prevPage() {
   if (isAnimating) return;
   if (state.page > 0) {
     isAnimating = true;
-    const current = document.querySelector('.page-card.active');
-    if (current) {
-      current.classList.remove('active');
-      current.classList.add('slide-out-right');
-    }
-    setTimeout(function() {
-      state.page--;
-      renderCurrentPage();
-      isAnimating = false;
-    }, ANIM_DURATION);
+    var cur = document.querySelector('.page-card.active');
+    if (cur) { cur.classList.remove('active'); cur.classList.add('slide-out-right'); }
+    setTimeout(function() { state.page--; renderCurrentPage(); isAnimating = false; }, ANIM_DURATION);
   } else if (state.chapter > 0) {
-    state.chapter--;
-    state.page = DATA[state.chapter].content.length - 1;
-    renderCurrentPage();
-    renderToc();
+    state.chapter--; state.page = DATA[state.chapter].content.length - 1;
+    renderCurrentPage(); renderToc();
   }
 }
-
 function loadChapter(idx, page) {
   if (idx < 0 || idx >= DATA.length) return;
-  state.chapter = idx;
-  state.page = page || 0;
-  renderCurrentPage();
-  renderToc();
-  closeToc();
+  state.chapter = idx; state.page = page || 0;
+  renderCurrentPage(); renderToc(); closeToc();
+}
+function goHome() {
+  loadChapter(0);
 }
 
-/* --- TABLE DES MATIERES --- */
+/* ===== TOC ===== */
 function renderToc() {
-  const list = document.getElementById('tocList');
+  var list = document.getElementById('tocList');
   list.innerHTML = '';
   DATA.forEach(function(ch, i) {
-    const li = document.createElement('li');
+    var li = document.createElement('li');
     li.className = 'toc-item' + (i === state.chapter ? ' active-chapter' : '');
-    li.setAttribute('role', 'listitem');
-    li.setAttribute('tabindex', '0');
+    li.setAttribute('role','listitem'); li.setAttribute('tabindex','0');
     li.onclick = function() { loadChapter(i); };
     li.onkeydown = function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadChapter(i); } };
-    li.innerHTML = '<div class="toc-titles"><span class="toc-ar" lang="ar" dir="rtl">' + ch.title + '</span><span class="toc-fr">' + ch.desc + '</span></div>';
+    // Progression
+    var progress = state.chapterProgress[i] || 0;
+    var total = ch.content.length;
+    var pctVal = Math.round((progress / total) * 100);
+    var hasBk = state.bookmarks.some(function(b) { return b.ch === i; });
+    li.innerHTML = '<div class="toc-progress" style="--pct:' + pctVal + '%"><div class="toc-progress-inner">' + pctVal + '%</div></div>'
+      + '<div class="toc-titles"><span class="toc-ar" lang="ar" dir="rtl">' + ch.title + '</span><span class="toc-fr">' + ch.desc + '</span></div>'
+      + (hasBk ? '<span class="toc-bookmark">&#9733;</span>' : '');
     list.appendChild(li);
   });
 }
-
 function openToc() {
-  const menu = document.getElementById('tocMenu');
-  menu.classList.add('open');
-  // Focus trap
-  setTimeout(function() {
-    document.getElementById('btnCloseToc').focus();
-  }, 100);
+  document.getElementById('tocMenu').classList.add('open');
+  setTimeout(function() { document.getElementById('btnCloseToc').focus(); }, 100);
 }
-function closeToc() {
-  document.getElementById('tocMenu').classList.remove('open');
-}
+function closeToc() { document.getElementById('tocMenu').classList.remove('open'); }
 
-/* --- SETTINGS --- */
+/* ===== SETTINGS ===== */
 function toggleSettings() {
-  const panel = document.getElementById('settingsPanel');
-  const backdrop = document.getElementById('settingsBackdrop');
-  const isOpen = panel.classList.contains('show');
-  panel.classList.toggle('show');
-  backdrop.classList.toggle('show');
-  if (!isOpen) {
-    document.getElementById('toggleAr').focus();
-  }
+  var p = document.getElementById('settingsPanel');
+  var b = document.getElementById('settingsBackdrop');
+  p.classList.toggle('show'); b.classList.toggle('show');
+  if (p.classList.contains('show')) document.getElementById('toggleAr').focus();
 }
-
 function toggleOption(key, el) {
   state.settings[key] = !state.settings[key];
   el.classList.toggle('on');
   el.setAttribute('aria-checked', String(state.settings[key]));
-  renderCurrentPage();
+  renderCurrentPage(); saveState();
+}
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(); saveState();
+}
+function changeFontSize(delta) {
+  state.fontStep = Math.max(0, Math.min(FONT_STEPS.length - 1, state.fontStep + delta));
+  applyFontScale(); renderCurrentPage(); saveState();
+}
+function setSpeed(s) {
+  state.speed = s; syncSpeedButtons();
+  if (state.autoPlay) { clearInterval(interval); interval = setInterval(nextPage, s * 1000); }
   saveState();
 }
 
-/* --- AUTO-PLAY --- */
+/* ===== AUTO-PLAY ===== */
 function togglePlay() {
   state.autoPlay = !state.autoPlay;
-  const btn = document.getElementById('btnPlay');
-  btn.innerText = state.autoPlay ? '\u23F8' : '\u25B6';
+  var btn = document.getElementById('btnPlay');
+  btn.querySelector('.timer-ring').style.animationDuration = state.speed + 's';
+  btn.parentElement.parentElement.querySelector('.nav-btn.main-action').classList.toggle('auto-playing', state.autoPlay);
+  // Use textContent to avoid HTML issues
+  var textNode = btn.firstChild;
+  if (textNode && textNode.nodeType === 3) textNode.textContent = state.autoPlay ? '\u23F8' : '\u25B6';
   btn.style.background = state.autoPlay ? 'var(--accent-gold)' : '';
   btn.style.color = state.autoPlay ? '#000' : '';
-  btn.setAttribute('aria-label', state.autoPlay ? 'Arreter la lecture automatique' : 'Lecture automatique');
-  if (state.autoPlay) {
-    clearInterval(interval);
-    interval = setInterval(nextPage, AUTOPLAY_INTERVAL);
+  btn.setAttribute('aria-label', state.autoPlay ? 'Arreter la lecture' : 'Lecture automatique');
+  if (state.autoPlay) { clearInterval(interval); interval = setInterval(nextPage, state.speed * 1000); }
+  else { clearInterval(interval); interval = null; }
+}
+
+/* ===== BOOKMARKS ===== */
+function isBookmarked(ch, pg) {
+  return state.bookmarks.some(function(b) { return b.ch === ch && b.pg === pg; });
+}
+function toggleBookmark() {
+  var ch = state.chapter, pg = state.page;
+  if (isBookmarked(ch, pg)) {
+    state.bookmarks = state.bookmarks.filter(function(b) { return !(b.ch === ch && b.pg === pg); });
   } else {
-    clearInterval(interval);
-    interval = null;
+    state.bookmarks.push({ ch: ch, pg: pg });
+  }
+  updateTopbar(); renderToc(); saveState();
+}
+
+/* ===== SHARE ===== */
+function shareVerse() {
+  var ch = DATA[state.chapter];
+  var item = ch.content[state.page];
+  var text = '';
+  if (item.ar) text += item.ar + '\n\n';
+  if (item.tr) text += item.tr + '\n\n';
+  if (item.fr) text += item.fr + '\n';
+  text += '\n— ' + ch.desc;
+  // Strip HTML tags
+  text = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+
+  if (navigator.share) {
+    navigator.share({ title: ch.desc, text: text }).catch(function() {});
+  } else {
+    // Fallback: copy to clipboard
+    navigator.clipboard.writeText(text).then(function() {
+      var toast = document.getElementById('shareToast');
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 2000);
+    }).catch(function() {});
   }
 }
 
-/* --- SWIPE TOUCH --- */
-(function initSwipe() {
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchEndX = 0;
-  let touchEndY = 0;
-  let isSwiping = false;
+/* ===== SEARCH ===== */
+function openSearch() {
+  document.getElementById('searchOverlay').classList.add('open');
+  setTimeout(function() { document.getElementById('searchInput').focus(); }, 100);
+}
+function closeSearch() {
+  document.getElementById('searchOverlay').classList.remove('open');
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').innerHTML = '';
+}
+function doSearch(query) {
+  var results = document.getElementById('searchResults');
+  results.innerHTML = '';
+  if (query.length < 2) return;
+  var q = query.toLowerCase();
+  var found = 0;
+  DATA.forEach(function(ch, ci) {
+    ch.content.forEach(function(item, pi) {
+      if (found >= 50) return;
+      var haystack = ((item.ar || '') + ' ' + (item.fr || '') + ' ' + (item.tr || '') + ' ' + (item.arBody || '')).toLowerCase();
+      if (haystack.indexOf(q) === -1) return;
+      found++;
+      var li = document.createElement('li');
+      li.className = 'search-result-item';
+      li.onclick = function() { closeSearch(); loadChapter(ci, pi); };
+      // Snippet
+      var snippet = (item.fr || item.tr || item.ar || '').replace(/<[^>]*>/g, '');
+      if (snippet.length > 120) snippet = snippet.substring(0, 120) + '...';
+      // Highlight
+      var regex = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      snippet = snippet.replace(regex, '<mark>$1</mark>');
+      li.innerHTML = '<div class="search-result-chapter">' + ch.desc + '</div><div class="search-result-text">' + snippet + '</div>';
+      results.appendChild(li);
+    });
+  });
+  if (found === 0) results.innerHTML = '<li class="search-empty">Aucun resultat</li>';
+}
 
-  const container = document.getElementById('bookContainer');
+/* ===== SWIPE INTERACTIF ===== */
+(function initSwipe() {
+  var startX = 0, startY = 0, currentX = 0, isDragging = false;
+  var container = document.getElementById('bookContainer');
   if (!container) return;
 
   container.addEventListener('touchstart', function(e) {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-    isSwiping = true;
+    if (isAnimating) return;
+    startX = e.changedTouches[0].clientX;
+    startY = e.changedTouches[0].clientY;
+    currentX = startX; isDragging = false;
   }, { passive: true });
 
   container.addEventListener('touchmove', function(e) {
-    if (!isSwiping) return;
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
+    if (isAnimating) return;
+    var x = e.changedTouches[0].clientX;
+    var y = e.changedTouches[0].clientY;
+    var dx = x - startX, dy = y - startY;
+
+    if (!isDragging && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+      isDragging = true;
+      var card = document.querySelector('.page-card.active');
+      if (card) card.classList.add('dragging');
+    }
+    if (!isDragging) return;
+    currentX = x;
+    var card = document.querySelector('.page-card.active');
+    if (card) {
+      var offset = currentX - startX;
+      var rot = offset * 0.02;
+      card.style.transform = 'translate3d(' + offset + 'px,0,0) rotateY(' + rot + 'deg) scale(' + (1 - Math.abs(offset) * 0.0003) + ')';
+      card.style.opacity = 1 - Math.abs(offset) * 0.002;
+    }
   }, { passive: true });
 
   container.addEventListener('touchend', function(e) {
-    if (!isSwiping) return;
-    isSwiping = false;
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
-
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-
-    // Horizontal swipe only if it's more horizontal than vertical
-    if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX < 0) {
-        nextPage(); // Swipe gauche = page suivante
-      } else {
-        prevPage(); // Swipe droite = page precedente
-      }
+    if (!isDragging) return;
+    isDragging = false;
+    var card = document.querySelector('.page-card.active');
+    if (card) card.classList.remove('dragging');
+    var dx = currentX - startX;
+    if (Math.abs(dx) > SWIPE_THRESHOLD) {
+      if (dx < 0) nextPage(); else prevPage();
+    } else {
+      // Snap back
+      if (card) { card.style.transform = ''; card.style.opacity = ''; }
     }
   }, { passive: true });
 })();
 
-/* --- CLAVIER --- */
+/* ===== CLAVIER ===== */
 document.addEventListener('keydown', function(e) {
-  // Ne pas capturer si on est dans un input
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-  if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    nextPage();
-  }
-  if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    prevPage();
-  }
-  if (e.key === ' ') {
-    e.preventDefault();
-    nextPage();
-  }
+  if (e.key === 'ArrowRight') { e.preventDefault(); nextPage(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevPage(); }
+  if (e.key === ' ') { e.preventDefault(); nextPage(); }
   if (e.key === 'Escape') {
-    closeToc();
-    const panel = document.getElementById('settingsPanel');
-    if (panel.classList.contains('show')) toggleSettings();
+    closeToc(); closeSearch();
+    if (document.getElementById('settingsPanel').classList.contains('show')) toggleSettings();
   }
 });
 
-/* --- EVENT LISTENERS (pas de inline onclick) --- */
+/* ===== EVENT LISTENERS ===== */
 document.getElementById('btnEnter').addEventListener('click', startApp);
-document.getElementById('btnBrand').addEventListener('click', openToc);
+document.getElementById('btnHome').addEventListener('click', goHome);
+document.getElementById('btnSearch').addEventListener('click', openSearch);
+document.getElementById('btnBookmark').addEventListener('click', toggleBookmark);
+document.getElementById('btnShare').addEventListener('click', shareVerse);
 document.getElementById('btnSettings').addEventListener('click', toggleSettings);
 document.getElementById('btnMenu').addEventListener('click', openToc);
 document.getElementById('btnCloseToc').addEventListener('click', closeToc);
+document.getElementById('btnCloseSearch').addEventListener('click', closeSearch);
 document.getElementById('btnPrev').addEventListener('click', prevPage);
 document.getElementById('btnPlay').addEventListener('click', togglePlay);
 document.getElementById('btnNext').addEventListener('click', nextPage);
 document.getElementById('settingsBackdrop').addEventListener('click', toggleSettings);
-
 document.getElementById('toggleAr').addEventListener('click', function() { toggleOption('showAr', this); });
 document.getElementById('toggleTr').addEventListener('click', function() { toggleOption('showTr', this); });
 document.getElementById('toggleFr').addEventListener('click', function() { toggleOption('showFr', this); });
+document.getElementById('toggleTheme').addEventListener('click', toggleTheme);
+document.getElementById('btnFontMinus').addEventListener('click', function() { changeFontSize(-1); });
+document.getElementById('btnFontPlus').addEventListener('click', function() { changeFontSize(1); });
+document.getElementById('searchInput').addEventListener('input', function() { doSearch(this.value); });
 
-/* --- DEMARRAGE --- */
+// Speed buttons
+document.querySelectorAll('#speedControl .speed-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() { setSpeed(parseInt(this.dataset.speed)); });
+});
+
+/* ===== DEMARRAGE ===== */
 loadState();
+applyTheme();
+applyFontScale();
 
-/* --- SERVICE WORKER --- */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(function() {});
 }
