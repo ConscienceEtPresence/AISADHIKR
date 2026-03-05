@@ -53,6 +53,7 @@
       --safe-left: env(safe-area-inset-left, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
       --font-scale: 1;
+      --line-scale: 1;
     }
     /* ========== THEME CLAIR ========== */
     .theme-light {
@@ -239,35 +240,35 @@
     /* CITATIONS */
     .quote-ar {
       font-family: var(--font-ar); font-size: clamp(1.6rem, 4.5vw, 2.2rem); color: var(--accent-gold);
-      line-height: 1.6; margin-bottom: 25px; direction: rtl;
+      line-height: calc(1.6 * var(--line-scale)); margin-bottom: 25px; direction: rtl;
       text-shadow: 0 0 10px var(--accent-gold-transparent);
     }
-    .quote-fr { font-family: var(--font-fr); font-size: 1.1rem; color: var(--text-main); font-style: italic; line-height: 1.6; margin-bottom: 15px; font-weight: 300; }
+    .quote-fr { font-family: var(--font-fr); font-size: 1.1rem; color: var(--text-main); font-style: italic; line-height: calc(1.6 * var(--line-scale)); margin-bottom: 15px; font-weight: 300; }
     .quote-ref { font-family: var(--font-title); font-size: 0.9rem; color: var(--text-muted); margin-top: 20px; letter-spacing: 1px; }
     .quote-decoration { font-size: 2rem; color: var(--accent-gold-dim); margin: 20px 0; opacity: 0.7; }
 
     /* VERSETS */
     .verse-ar {
-      font-family: var(--font-ar); font-size: calc(clamp(1.3rem, 3.5vw, 1.6rem) * var(--font-scale)); line-height: 1.8;
+      font-family: var(--font-ar); font-size: calc(clamp(1.3rem, 3.5vw, 1.6rem) * var(--font-scale)); line-height: calc(1.8 * var(--line-scale));
       color: var(--accent-gold); margin-bottom: 20px; direction: rtl;
       transition: font-size 0.3s ease;
     }
     .verse-tr { font-size: calc(0.9rem * var(--font-scale)); color: var(--text-muted); font-style: italic; margin-bottom: 15px; }
-    .verse-fr { font-size: calc(1rem * var(--font-scale)); color: var(--text-main); line-height: 1.5; }
+    .verse-fr { font-size: calc(1rem * var(--font-scale)); color: var(--text-main); line-height: calc(1.5 * var(--line-scale)); }
     .verse-separator { width: 40px; height: 1px; background: var(--accent-gold-dim); margin: 5px auto 15px; opacity: 0.4; }
 
     /* ARABE SEUL = plus gros */
     .arabic-only .verse-ar {
       font-size: calc(clamp(2rem, 6vw, 2.8rem) * var(--font-scale));
-      line-height: 2; margin-bottom: 10px;
+      line-height: calc(2 * var(--line-scale)); margin-bottom: 10px;
     }
     .arabic-only .quote-ar {
       font-size: calc(clamp(2.2rem, 6vw, 3rem) * var(--font-scale));
-      line-height: 1.8;
+      line-height: calc(1.8 * var(--line-scale));
     }
     .arabic-only .long-text-ar {
       font-size: calc(1.6rem * var(--font-scale));
-      line-height: 2.2;
+      line-height: calc(2.2 * var(--line-scale));
     }
     .arabic-only .title-page-ar {
       font-size: clamp(2.5rem, 8vw, 4rem);
@@ -275,8 +276,8 @@
 
     /* SCROLLABLE / LONG TEXT */
     .scrollable-content { overflow-y: auto; width: 100%; flex: 1; padding: 10px 5px; margin-top: 10px; scrollbar-width: thin; scrollbar-color: var(--accent-gold-dim) transparent; }
-    .long-text-fr { text-align: justify; text-justify: inter-word; line-height: 1.6; font-size: calc(1rem * var(--font-scale)); padding: 0 5px; }
-    .long-text-ar { font-family: var(--font-ar); font-size: calc(1.3rem * var(--font-scale)); line-height: 2; color: var(--text-main); text-align: justify; direction: rtl; }
+    .long-text-fr { text-align: justify; text-justify: inter-word; line-height: calc(1.6 * var(--line-scale)); font-size: calc(1rem * var(--font-scale)); padding: 0 5px; }
+    .long-text-ar { font-family: var(--font-ar); font-size: calc(1.3rem * var(--font-scale)); line-height: calc(2 * var(--line-scale)); color: var(--text-main); text-align: justify; direction: rtl; }
     .long-text-fr a { color: var(--accent-gold); text-decoration: none; border-bottom: 1px dashed var(--accent-gold); transition: all 0.2s; }
     .long-text-fr a:hover { color: var(--text-main); border-bottom-style: solid; }
     .bismillah { font-family: var(--font-ar); color: var(--accent-gold); font-size: 1.4rem; margin-bottom: 25px; opacity: 0.7; }
@@ -443,6 +444,57 @@
     }
     .speed-btn.active { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
 
+    /* ========== IMMERSIVE MODE ========== */
+    .topbar, .nav-bar { transition: transform 0.4s ease, opacity 0.4s ease; }
+    body.immersive-mode .topbar { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+    body.immersive-mode .nav-bar { transform: translateY(100%); opacity: 0; pointer-events: none; }
+    body.immersive-mode .book-container { height: calc(100vh - 10px) !important; }
+    body.immersive-mode .progress-line { bottom: 0; z-index: 200; }
+    body.immersive-mode.bars-visible .topbar,
+    body.immersive-mode.bars-visible .nav-bar { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+    /* ========== TASBEEH OVERLAY ========== */
+    .tasbeeh-overlay {
+      position: fixed; inset: 0; background: var(--bg-color); z-index: 200;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      gap: 30px; padding: 20px;
+    }
+    .tasbeeh-overlay.open { display: flex; }
+    .tasbeeh-header { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .tasbeeh-title { font-family: var(--font-ar); font-size: 1.8rem; color: var(--accent-gold); }
+    .tasbeeh-circle {
+      width: 200px; height: 200px; border-radius: 50%;
+      border: 3px solid var(--accent-gold); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; cursor: pointer;
+      user-select: none; -webkit-user-select: none; transition: all 0.15s ease;
+      background: rgba(212, 175, 55, 0.05);
+    }
+    .tasbeeh-circle:active { transform: scale(0.95); background: rgba(212, 175, 55, 0.15); }
+    .tasbeeh-count { font-size: 3.5rem; font-weight: 600; color: var(--accent-gold); font-family: var(--font-title); }
+    .tasbeeh-target { font-size: 1rem; color: var(--text-muted); margin-top: -5px; }
+    .tasbeeh-presets { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .tasbeeh-custom { width: 60px; height: 32px; border-radius: 6px; border: 1px solid var(--border-light); background: transparent; color: var(--text-main); text-align: center; font-size: 0.85rem; }
+    .tasbeeh-reset { background: transparent; border: 1px solid var(--border-light); color: var(--text-muted); padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .tasbeeh-reset:active { background: var(--accent-gold); color: #000; }
+    @keyframes tasbeeh-pulse { 0% { box-shadow: 0 0 0 0 rgba(212,175,55,0.6); } 100% { box-shadow: 0 0 0 30px rgba(212,175,55,0); } }
+    .tasbeeh-circle.goal-reached { animation: tasbeeh-pulse 0.6s ease 3; border-color: var(--accent-gold-light); }
+
+    /* ========== RESUME TOAST ========== */
+    .resume-toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--settings-bg); border: 1px solid var(--border-light);
+      border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 8px 30px var(--shadow-card); z-index: 150; opacity: 0;
+      transition: all 0.4s var(--ease-spring); max-width: 90vw;
+    }
+    .resume-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .resume-text { font-size: 0.85rem; color: var(--text-main); flex: 1; }
+    .resume-actions { display: flex; gap: 8px; }
+    .resume-btn { width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.1rem; display: grid; place-items: center; transition: all 0.2s; }
+    .resume-yes { background: var(--accent-gold); color: #000; }
+    .resume-no { background: var(--toggle-bg); color: var(--text-muted); }
+    .resume-btn:active { transform: scale(0.9); }
+
     /* Focus */
     :focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
     :focus:not(:focus-visible) { outline: none; }
@@ -513,7 +565,8 @@
       <div class="topbar-right">
         <button class="icon-btn" id="btnSearch" aria-label="Rechercher">&#128269;</button>
         <button class="icon-btn" id="btnBookmark" aria-label="Ajouter aux favoris">&#9734;</button>
-        <button class="icon-btn" id="btnShare" aria-label="Partager ce verset">&#8599;</button>
+        <button class="icon-btn" id="btnTasbeeh" aria-label="Compteur Tasbeeh">&#128255;</button>
+        <button class="icon-btn" id="btnImmersive" aria-label="Mode immersif">&#9974;</button>
         <button class="icon-btn" id="btnSettings" aria-label="Parametres">&#9881;&#65039;</button>
         <button class="icon-btn" id="btnMenu" aria-label="Sommaire">&#9776;</button>
       </div>
@@ -533,6 +586,21 @@
           <button class="font-size-btn" id="btnFontMinus" aria-label="Reduire la police">A-</button>
           <span class="font-size-label" id="fontSizeLabel">100%</span>
           <button class="font-size-btn" id="btnFontPlus" aria-label="Agrandir la police">A+</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-label">Interligne</div>
+        <div class="font-size-control">
+          <button class="font-size-btn" id="btnLineMinus" aria-label="Reduire l'interligne">&#8801;</button>
+          <span class="font-size-label" id="lineLabel">100%</span>
+          <button class="font-size-btn" id="btnLinePlus" aria-label="Augmenter l'interligne">&#9776;</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-label">Partager</div>
+        <div class="toggle-row">
+          <span>Partager ce verset</span>
+          <button class="font-size-btn" id="btnShareSettings" aria-label="Partager" style="font-size:1.2rem">&#8599;</button>
         </div>
       </div>
       <div class="settings-section">
@@ -578,6 +646,35 @@
 
   <div class="share-toast" id="shareToast">Texte copie !</div>
 
+  <!-- TASBEEH OVERLAY -->
+  <div class="tasbeeh-overlay" id="tasbeehOverlay" role="dialog" aria-label="Compteur Tasbeeh" aria-modal="true">
+    <div class="tasbeeh-header">
+      <span class="tasbeeh-title" lang="ar" dir="rtl">&#1578;&#1587;&#1576;&#1610;&#1581;</span>
+      <button class="close-btn" id="btnCloseTasbeeh" aria-label="Fermer">&times;</button>
+    </div>
+    <div class="tasbeeh-circle" id="tasbeehCircle" role="button" tabindex="0" aria-label="Incrementer le compteur">
+      <div class="tasbeeh-count" id="tasbeehCount">0</div>
+      <div class="tasbeeh-target" id="tasbeehTarget">/ 33</div>
+    </div>
+    <div class="tasbeeh-presets" id="tasbeehPresets">
+      <button class="speed-btn" data-target="3">3</button>
+      <button class="speed-btn" data-target="7">7</button>
+      <button class="speed-btn active" data-target="33">33</button>
+      <button class="speed-btn" data-target="100">100</button>
+      <input type="number" class="tasbeeh-custom" id="tasbeehCustom" placeholder="..." min="1" max="9999" aria-label="Objectif personnalise">
+    </div>
+    <button class="tasbeeh-reset" id="btnTasbeehReset" aria-label="Reinitialiser">&#8634; Reinitialiser</button>
+  </div>
+
+  <!-- RESUME TOAST -->
+  <div class="resume-toast" id="resumeToast">
+    <div class="resume-text" id="resumeText"></div>
+    <div class="resume-actions">
+      <button class="resume-btn resume-yes" id="btnResumeYes" aria-label="Reprendre">&#10003;</button>
+      <button class="resume-btn resume-no" id="btnResumeNo" aria-label="Ignorer">&#10005;</button>
+    </div>
+  </div>
+
 <script src="data.js"></script>
 <script>
 /* ===== CONSTANTES ===== */
@@ -585,7 +682,10 @@ var ANIM_DURATION = 400;
 var SWIPE_THRESHOLD = 50;
 var STORAGE_KEY = 'aisadhikr_state';
 var FONT_STEPS = [0.8, 0.9, 1, 1.1, 1.25, 1.4];
+var LINE_STEPS = [1.2, 1.4, 1.6, 1.8, 2.0, 2.2];
 var SPEED_OPTIONS = [3, 5, 8, 15];
+var TASBEEH_PRESETS = [3, 7, 33, 100];
+var IMMERSIVE_AUTOHIDE = 3000;
 
 /* ===== STATE ===== */
 var state = {
@@ -593,13 +693,20 @@ var state = {
   settings: { showAr: true, showTr: true, showFr: true },
   autoPlay: false,
   fontStep: 2,
+  lineStep: 2,
   speed: 5,
   theme: 'dark',
   bookmarks: [],
-  chapterProgress: {}
+  chapterProgress: {},
+  tasbeeh: { count: 0, target: 33 },
+  immersive: false
 };
 var interval = null;
 var isAnimating = false;
+var immersiveTimer = null;
+var resumeTimer = null;
+var savedPosition = null;
+var lastSwipeTime = 0;
 
 /* ===== PERSISTENCE ===== */
 function saveState() {
@@ -610,8 +717,9 @@ function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       chapter: state.chapter, page: state.page,
       settings: state.settings, fontStep: state.fontStep,
-      speed: state.speed, theme: state.theme,
-      bookmarks: state.bookmarks, chapterProgress: state.chapterProgress
+      lineStep: state.lineStep, speed: state.speed, theme: state.theme,
+      bookmarks: state.bookmarks, chapterProgress: state.chapterProgress,
+      tasbeeh: state.tasbeeh, immersive: state.immersive
     }));
   } catch(e) {}
 }
@@ -630,6 +738,9 @@ function loadState() {
     if (p.theme) state.theme = p.theme;
     if (Array.isArray(p.bookmarks)) state.bookmarks = p.bookmarks;
     if (p.chapterProgress) state.chapterProgress = p.chapterProgress;
+    if (p.tasbeeh && typeof p.tasbeeh.count === 'number') state.tasbeeh = { count: p.tasbeeh.count, target: p.tasbeeh.target || 33 };
+    if (typeof p.lineStep === 'number' && p.lineStep >= 0 && p.lineStep < LINE_STEPS.length) state.lineStep = p.lineStep;
+    if (typeof p.immersive === 'boolean') state.immersive = p.immersive;
   } catch(e) {}
 }
 
@@ -637,13 +748,29 @@ function loadState() {
 function startApp() {
   var intro = document.getElementById('intro');
   var app = document.getElementById('app');
+  // Sauver la position avant de potentiellement la reset
+  var hadSavedPos = (state.chapter !== 0 || state.page !== 0);
+  var savedCh = state.chapter, savedPg = state.page;
   intro.classList.add('fade-out');
   setTimeout(function() {
     app.classList.add('visible');
     intro.style.display = 'none';
-    loadChapter(state.chapter, state.page);
-    renderToc();
-    syncAll();
+    if (hadSavedPos) {
+      // Start at beginning, then show resume toast
+      state.chapter = 0; state.page = 0;
+      loadChapter(0, 0);
+      renderToc();
+      syncAll();
+      savedPosition = { chapter: savedCh, page: savedPg };
+      var ch = DATA[savedCh];
+      document.getElementById('resumeText').textContent = 'Reprendre ? ' + ch.desc + ' — Page ' + (savedPg + 1) + '/' + ch.content.length;
+      setTimeout(function() { document.getElementById('resumeToast').classList.add('show'); }, 400);
+      resumeTimer = setTimeout(function() { dismissResume(); }, 8000);
+    } else {
+      loadChapter(state.chapter, state.page);
+      renderToc();
+      syncAll();
+    }
   }, 600);
 }
 
@@ -651,7 +778,9 @@ function syncAll() {
   syncToggles();
   applyTheme();
   applyFontScale();
+  applyLineScale();
   syncSpeedButtons();
+  applyImmersive();
 }
 
 function syncToggles() {
@@ -879,6 +1008,108 @@ function setSpeed(s) {
   saveState();
 }
 
+/* ===== INTERLIGNE ===== */
+function applyLineScale() {
+  var scale = LINE_STEPS[state.lineStep] / LINE_STEPS[2]; // ratio vs default (1.6)
+  document.documentElement.style.setProperty('--line-scale', scale);
+  document.getElementById('lineLabel').textContent = Math.round(scale * 100) + '%';
+}
+function changeLineSpacing(delta) {
+  state.lineStep = Math.max(0, Math.min(LINE_STEPS.length - 1, state.lineStep + delta));
+  applyLineScale(); renderCurrentPage(); saveState();
+}
+
+/* ===== IMMERSIVE ===== */
+function toggleImmersive() {
+  state.immersive = !state.immersive;
+  applyImmersive(); saveState();
+}
+function applyImmersive() {
+  if (state.immersive) {
+    document.body.classList.add('immersive-mode');
+    document.body.classList.remove('bars-visible');
+  } else {
+    document.body.classList.remove('immersive-mode', 'bars-visible');
+    clearTimeout(immersiveTimer);
+  }
+}
+function showBarsTemporarily() {
+  if (!state.immersive) return;
+  document.body.classList.add('bars-visible');
+  clearTimeout(immersiveTimer);
+  immersiveTimer = setTimeout(function() {
+    document.body.classList.remove('bars-visible');
+  }, IMMERSIVE_AUTOHIDE);
+}
+
+/* ===== TASBEEH ===== */
+function openTasbeeh() {
+  document.getElementById('tasbeehOverlay').classList.add('open');
+  syncTasbeeh();
+}
+function closeTasbeeh() {
+  document.getElementById('tasbeehOverlay').classList.remove('open');
+}
+function incrementTasbeeh() {
+  state.tasbeeh.count++;
+  syncTasbeeh();
+  if (navigator.vibrate) navigator.vibrate(30);
+  if (state.tasbeeh.count >= state.tasbeeh.target) {
+    if (navigator.vibrate) navigator.vibrate([50, 50, 50, 50, 50]);
+    document.getElementById('tasbeehCircle').classList.add('goal-reached');
+    setTimeout(function() { document.getElementById('tasbeehCircle').classList.remove('goal-reached'); }, 2000);
+  }
+  saveState();
+}
+function resetTasbeeh() {
+  state.tasbeeh.count = 0;
+  syncTasbeeh(); saveState();
+}
+function setTasbeehTarget(t) {
+  state.tasbeeh.target = Math.max(1, t);
+  state.tasbeeh.count = 0;
+  syncTasbeeh(); saveState();
+  // Sync preset buttons
+  var btns = document.querySelectorAll('#tasbeehPresets .speed-btn');
+  btns.forEach(function(b) { b.classList.toggle('active', parseInt(b.dataset.target) === state.tasbeeh.target); });
+}
+function syncTasbeeh() {
+  document.getElementById('tasbeehCount').textContent = state.tasbeeh.count;
+  document.getElementById('tasbeehTarget').textContent = '/ ' + state.tasbeeh.target;
+  var btns = document.querySelectorAll('#tasbeehPresets .speed-btn');
+  btns.forEach(function(b) { b.classList.toggle('active', parseInt(b.dataset.target) === state.tasbeeh.target); });
+}
+
+/* ===== RESUME TOAST ===== */
+function showResumeToast() {
+  // Only show if saved position is not chapter 0 page 0
+  if (state.chapter === 0 && state.page === 0) return;
+  savedPosition = { chapter: state.chapter, page: state.page };
+  var ch = DATA[savedPosition.chapter];
+  var text = 'Reprendre ? ' + ch.desc + ' — Page ' + (savedPosition.page + 1) + '/' + ch.content.length;
+  document.getElementById('resumeText').textContent = text;
+  // Reset to start
+  state.chapter = 0; state.page = 0;
+  renderCurrentPage(); renderToc();
+  // Show toast
+  var toast = document.getElementById('resumeToast');
+  toast.classList.add('show');
+  resumeTimer = setTimeout(function() { dismissResume(); }, 8000);
+}
+function acceptResume() {
+  clearTimeout(resumeTimer);
+  document.getElementById('resumeToast').classList.remove('show');
+  if (savedPosition) {
+    loadChapter(savedPosition.chapter, savedPosition.page);
+    savedPosition = null;
+  }
+}
+function dismissResume() {
+  clearTimeout(resumeTimer);
+  document.getElementById('resumeToast').classList.remove('show');
+  savedPosition = null;
+}
+
 /* ===== AUTO-PLAY ===== */
 function togglePlay() {
   state.autoPlay = !state.autoPlay;
@@ -1013,6 +1244,7 @@ function doSearch(query) {
     if (card) card.classList.remove('dragging');
     var dx = currentX - startX;
     if (Math.abs(dx) > SWIPE_THRESHOLD) {
+      lastSwipeTime = Date.now();
       if (dx < 0) nextPage(); else prevPage();
     } else {
       // Snap back
@@ -1022,15 +1254,30 @@ function doSearch(query) {
 })();
 
 /* ===== CLAVIER ===== */
+function isOverlayOpen() {
+  return document.getElementById('tocMenu').classList.contains('open')
+    || document.getElementById('searchOverlay').classList.contains('open')
+    || document.getElementById('settingsPanel').classList.contains('show')
+    || document.getElementById('tasbeehOverlay').classList.contains('open');
+}
 document.addEventListener('keydown', function(e) {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  // Escape ferme tout
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeToc(); closeSearch(); closeTasbeeh(); dismissResume();
+    if (document.getElementById('settingsPanel').classList.contains('show')) toggleSettings();
+    if (state.immersive) { toggleImmersive(); }
+    return;
+  }
+  // Bloquer les autres touches si overlay ouvert
+  if (isOverlayOpen()) return;
   if (e.key === 'ArrowRight') { e.preventDefault(); nextPage(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prevPage(); }
-  if (e.key === ' ') { e.preventDefault(); nextPage(); }
-  if (e.key === 'Escape') {
-    closeToc(); closeSearch();
-    if (document.getElementById('settingsPanel').classList.contains('show')) toggleSettings();
-  }
+  if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleImmersive(); }
+  if (e.key === 's' || e.key === 'S') { e.preventDefault(); toggleSettings(); }
+  if (e.key === 't' || e.key === 'T') { e.preventDefault(); openToc(); }
 });
 
 /* ===== EVENT LISTENERS ===== */
@@ -1038,7 +1285,8 @@ document.getElementById('btnEnter').addEventListener('click', startApp);
 document.getElementById('btnHome').addEventListener('click', goHome);
 document.getElementById('btnSearch').addEventListener('click', openSearch);
 document.getElementById('btnBookmark').addEventListener('click', toggleBookmark);
-document.getElementById('btnShare').addEventListener('click', shareVerse);
+document.getElementById('btnTasbeeh').addEventListener('click', openTasbeeh);
+document.getElementById('btnImmersive').addEventListener('click', toggleImmersive);
 document.getElementById('btnSettings').addEventListener('click', toggleSettings);
 document.getElementById('btnMenu').addEventListener('click', openToc);
 document.getElementById('btnCloseToc').addEventListener('click', closeToc);
@@ -1053,17 +1301,46 @@ document.getElementById('toggleFr').addEventListener('click', function() { toggl
 document.getElementById('toggleTheme').addEventListener('click', toggleTheme);
 document.getElementById('btnFontMinus').addEventListener('click', function() { changeFontSize(-1); });
 document.getElementById('btnFontPlus').addEventListener('click', function() { changeFontSize(1); });
+document.getElementById('btnLineMinus').addEventListener('click', function() { changeLineSpacing(-1); });
+document.getElementById('btnLinePlus').addEventListener('click', function() { changeLineSpacing(1); });
+document.getElementById('btnShareSettings').addEventListener('click', shareVerse);
 document.getElementById('searchInput').addEventListener('input', function() { doSearch(this.value); });
+
+// Tasbeeh events
+document.getElementById('tasbeehCircle').addEventListener('click', incrementTasbeeh);
+document.getElementById('tasbeehCircle').addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); incrementTasbeeh(); } });
+document.getElementById('btnCloseTasbeeh').addEventListener('click', closeTasbeeh);
+document.getElementById('btnTasbeehReset').addEventListener('click', resetTasbeeh);
+document.querySelectorAll('#tasbeehPresets .speed-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() { setTasbeehTarget(parseInt(this.dataset.target)); });
+});
+document.getElementById('tasbeehCustom').addEventListener('change', function() {
+  var v = parseInt(this.value);
+  if (v > 0) setTasbeehTarget(v);
+});
+
+// Resume toast
+document.getElementById('btnResumeYes').addEventListener('click', acceptResume);
+document.getElementById('btnResumeNo').addEventListener('click', dismissResume);
 
 // Speed buttons
 document.querySelectorAll('#speedControl .speed-btn').forEach(function(btn) {
   btn.addEventListener('click', function() { setSpeed(parseInt(this.dataset.speed)); });
 });
 
+// Immersive: tap content to show bars temporarily
+document.getElementById('bookContainer').addEventListener('click', function(e) {
+  if (!state.immersive) return;
+  // Ignore if swipe just happened
+  if (Date.now() - lastSwipeTime < 500) return;
+  showBarsTemporarily();
+});
+
 /* ===== DEMARRAGE ===== */
 loadState();
 applyTheme();
 applyFontScale();
+applyLineScale();
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(function() {});
