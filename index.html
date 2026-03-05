@@ -365,22 +365,27 @@
     /* CITATIONS */
     .quote-ar {
       font-family: var(--font-ar); font-size: clamp(1.6rem, 4.5vw, 2.2rem); color: var(--accent-gold);
-      line-height: calc(1.6 * var(--line-scale)); margin-bottom: 25px; direction: rtl;
+      line-height: calc(1.6 * var(--line-scale)); margin-bottom: 28px; direction: rtl;
       text-shadow: 0 0 10px var(--accent-gold-transparent);
     }
-    .quote-fr { font-family: var(--font-fr); font-size: 1.1rem; color: var(--text-main); font-style: italic; line-height: calc(1.6 * var(--line-scale)); margin-bottom: 15px; font-weight: 300; }
+    .quote-fr { font-family: var(--font-fr); font-size: 1.1rem; color: var(--text-main); font-style: italic; line-height: calc(1.6 * var(--line-scale)); margin-top: 4px; margin-bottom: 15px; font-weight: 300; }
     .quote-ref { font-family: var(--font-title); font-size: 0.9rem; color: var(--text-muted); margin-top: 20px; letter-spacing: 1px; }
     .quote-decoration { font-size: 2rem; color: var(--accent-gold-dim); margin: 20px 0; opacity: 0.7; }
 
     /* VERSETS */
     .verse-ar {
       font-family: var(--font-ar); font-size: calc(clamp(1.3rem, 3.5vw, 1.6rem) * var(--font-scale)); line-height: calc(1.8 * var(--line-scale));
-      color: var(--accent-gold); margin-bottom: 20px; direction: rtl;
+      color: var(--accent-gold); margin-bottom: 24px; direction: rtl;
       transition: font-size 0.3s ease;
     }
     .verse-tr { font-size: calc(0.9rem * var(--font-scale)); color: var(--text-muted); font-style: italic; margin-bottom: 15px; }
-    .verse-fr { font-size: calc(1rem * var(--font-scale)); color: var(--text-main); line-height: calc(1.5 * var(--line-scale)); }
-    .verse-separator { width: 40px; height: 1px; background: var(--accent-gold-dim); margin: 5px auto 15px; opacity: 0.4; }
+    .verse-fr { font-size: calc(1rem * var(--font-scale)); color: var(--text-main); line-height: calc(1.5 * var(--line-scale)); margin-top: 4px; }
+    .verse-separator { width: 60px; height: 1px; background: var(--accent-gold-dim); margin: 12px auto 18px; opacity: 0.5; }
+
+    /* Alignement arabe */
+    .ar-align-right .verse-ar, .ar-align-right .quote-ar { text-align: right; }
+    .ar-align-center .verse-ar, .ar-align-center .quote-ar { text-align: center; }
+    .ar-align-left .verse-ar, .ar-align-left .quote-ar { text-align: left; }
 
     /* ARABE SEUL = plus gros */
     .arabic-only .verse-ar {
@@ -825,6 +830,14 @@
         </div>
       </div>
       <div class="settings-section">
+        <div class="settings-label">Alignement arabe</div>
+        <div class="speed-control" id="arAlignControl">
+          <button class="speed-btn active" data-align="right">&larr; Droite</button>
+          <button class="speed-btn" data-align="center">&harr; Centre</button>
+          <button class="speed-btn" data-align="left">Gauche &rarr;</button>
+        </div>
+      </div>
+      <div class="settings-section">
         <div class="settings-label">Partager</div>
         <div class="toggle-row">
           <span>Partager ce verset</span>
@@ -948,7 +961,8 @@ var state = {
   bookmarks: [],
   chapterProgress: {},
   tasbeeh: { count: 0, target: 33 },
-  immersive: false
+  immersive: false,
+  arAlign: 'right'
 };
 var interval = null;
 var isAnimating = false;
@@ -968,7 +982,8 @@ function saveState() {
       settings: state.settings, fontStep: state.fontStep,
       lineStep: state.lineStep, speed: state.speed, theme: state.theme,
       bookmarks: state.bookmarks, chapterProgress: state.chapterProgress,
-      tasbeeh: state.tasbeeh, immersive: state.immersive
+      tasbeeh: state.tasbeeh, immersive: state.immersive,
+      arAlign: state.arAlign
     }));
   } catch(e) {}
 }
@@ -990,6 +1005,7 @@ function loadState() {
     if (p.tasbeeh && typeof p.tasbeeh.count === 'number') state.tasbeeh = { count: p.tasbeeh.count, target: p.tasbeeh.target || 33 };
     if (typeof p.lineStep === 'number' && p.lineStep >= 0 && p.lineStep < LINE_STEPS.length) state.lineStep = p.lineStep;
     if (typeof p.immersive === 'boolean') state.immersive = p.immersive;
+    if (p.arAlign && ['right','center','left'].indexOf(p.arAlign) !== -1) state.arAlign = p.arAlign;
   } catch(e) {}
 }
 
@@ -1034,6 +1050,7 @@ function syncAll() {
   applyLineScale();
   syncSpeedButtons();
   applyImmersive();
+  applyArAlign();
 }
 
 function syncToggles() {
@@ -1094,7 +1111,7 @@ function renderCurrentPage() {
 
   // Determine si on est en mode arabe seul
   var arOnly = state.settings.showAr && !state.settings.showTr && !state.settings.showFr;
-  container.className = 'book-container' + (arOnly ? ' arabic-only' : '');
+  container.className = 'book-container' + (arOnly ? ' arabic-only' : '') + ' ar-align-' + state.arAlign;
 
   container.innerHTML = '';
   var card = document.createElement('div');
@@ -1104,6 +1121,7 @@ function renderCurrentPage() {
   if (item.isQuote) {
     html += '<div class="quote-decoration" aria-hidden="true">&#1758;</div>';
     if (state.settings.showAr) html += '<div class="quote-ar" lang="ar" dir="rtl">' + item.ar + '</div>';
+    if (state.settings.showAr && state.settings.showFr) html += '<div class="verse-separator"></div>';
     if (state.settings.showFr) html += '<div class="quote-fr">' + item.fr + '</div>';
     if (item.sub) html += '<div class="quote-ref">' + item.sub + '</div>';
     html += '<div class="quote-decoration" aria-hidden="true" style="transform:rotate(180deg)">&#1758;</div>';
@@ -1326,6 +1344,15 @@ function applyLineScale() {
 function changeLineSpacing(delta) {
   state.lineStep = Math.max(0, Math.min(LINE_STEPS.length - 1, state.lineStep + delta));
   applyLineScale(); renderCurrentPage(); saveState();
+}
+
+/* ===== ALIGNEMENT ARABE ===== */
+function applyArAlign() {
+  var container = document.getElementById('bookContainer');
+  container.classList.remove('ar-align-right', 'ar-align-center', 'ar-align-left');
+  container.classList.add('ar-align-' + state.arAlign);
+  var btns = document.querySelectorAll('#arAlignControl .speed-btn');
+  btns.forEach(function(b) { b.classList.toggle('active', b.dataset.align === state.arAlign); });
 }
 
 /* ===== IMMERSIVE ===== */
@@ -1680,6 +1707,12 @@ document.getElementById('btnFontPlus').addEventListener('click', function() { ch
 document.getElementById('btnLineMinus').addEventListener('click', function() { changeLineSpacing(-1); });
 document.getElementById('btnLinePlus').addEventListener('click', function() { changeLineSpacing(1); });
 document.getElementById('btnShareSettings').addEventListener('click', shareVerse);
+document.querySelectorAll('#arAlignControl .speed-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    state.arAlign = this.dataset.align;
+    applyArAlign(); renderCurrentPage(); saveState();
+  });
+});
 document.getElementById('searchInput').addEventListener('input', function() { doSearch(this.value); });
 
 // Tasbeeh events
