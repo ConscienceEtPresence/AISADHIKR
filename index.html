@@ -805,6 +805,7 @@
       <button class="nav-btn" id="btnPrev" aria-label="Page precedente">&#8592;</button>
       <button class="nav-btn main-action" id="btnPlay" aria-label="Lecture automatique">&#9654;<span class="timer-ring"></span></button>
       <button class="nav-btn" id="btnNext" aria-label="Page suivante">&#8594;</button>
+      <button class="nav-btn" id="btnTasbeehNav" aria-label="Compteur Tasbeeh">&#128255;</button>
     </nav>
   </main>
 
@@ -1571,6 +1572,14 @@ document.getElementById('btnCloseSearch').addEventListener('click', closeSearch)
 document.getElementById('btnPrev').addEventListener('click', prevPage);
 document.getElementById('btnPlay').addEventListener('click', togglePlay);
 document.getElementById('btnNext').addEventListener('click', nextPage);
+// Navbar 📿: tap = mini flottant direct, re-tap = overlay complet
+document.getElementById('btnTasbeehNav').addEventListener('click', function() {
+  if (document.getElementById('miniTasbeeh').classList.contains('show')) {
+    openTasbeeh(); // deja en mini → ouvrir overlay pour configurer
+  } else {
+    showMiniTasbeeh(); // afficher mini directement pour lire+compter
+  }
+});
 document.getElementById('settingsBackdrop').addEventListener('click', toggleSettings);
 document.getElementById('toggleAr').addEventListener('click', function() { toggleOption('showAr', this); });
 document.getElementById('toggleTr').addEventListener('click', function() { toggleOption('showTr', this); });
