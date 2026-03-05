@@ -664,9 +664,9 @@
       background: var(--settings-bg); border: 1px solid var(--border-light);
       border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px;
       box-shadow: 0 8px 30px var(--shadow-card); z-index: 150; opacity: 0;
-      transition: all 0.4s var(--ease-spring); max-width: 90vw;
+      transition: all 0.4s var(--ease-spring); max-width: 90vw; pointer-events: none;
     }
-    .resume-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .resume-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
     .resume-text { font-size: 0.85rem; color: var(--text-main); flex: 1; }
     .resume-actions { display: flex; gap: 8px; }
     .resume-btn { width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.1rem; display: grid; place-items: center; transition: all 0.2s; }
