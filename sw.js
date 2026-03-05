@@ -1,9 +1,11 @@
-const CACHE_NAME = 'dhikr-v1';
+const CACHE_NAME = 'dhikr-v2';
 const ASSETS = [
   './',
   './index.html',
   './data.js',
   './logo.png',
+  './icon-192.png',
+  './icon-512.png',
   './cheikh-khaled.jpg',
   './manifest.json'
 ];
