@@ -577,6 +577,36 @@
     .tasbeeh-reset:active { background: var(--accent-gold); color: #000; }
     @keyframes tasbeeh-pulse { 0% { box-shadow: 0 0 0 0 rgba(212,175,55,0.6); } 100% { box-shadow: 0 0 0 30px rgba(212,175,55,0); } }
     .tasbeeh-circle.goal-reached { animation: tasbeeh-pulse 0.6s ease 3; border-color: var(--accent-gold-light); }
+    .tasbeeh-minimize { background: transparent; border: 1px solid var(--border-light); color: var(--text-muted); padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    .tasbeeh-minimize:active { background: var(--accent-gold); color: #000; }
+
+    /* ========== MINI TASBEEH FLOTTANT ========== */
+    .mini-tasbeeh {
+      position: fixed; z-index: 160; display: none;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--accent-gold); color: #000;
+      font-family: var(--font-title); font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; user-select: none; -webkit-user-select: none;
+      box-shadow: 0 4px 20px rgba(212,175,55,0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      align-items: center; justify-content: center; flex-direction: column;
+    }
+    .mini-tasbeeh.show { display: flex; }
+    .mini-tasbeeh:active { transform: scale(0.9); }
+    .mini-tasbeeh-target { font-size: 0.55rem; opacity: 0.7; margin-top: -2px; }
+    .mini-tasbeeh.bottom-right { bottom: calc(var(--navbar-h) + 15px + var(--safe-bottom)); right: 15px; }
+    .mini-tasbeeh.top-left { top: calc(var(--topbar-h) + 15px + var(--safe-top)); left: 15px; }
+    .mini-tasbeeh-close {
+      position: absolute; top: -6px; right: -6px; width: 20px; height: 20px;
+      border-radius: 50%; background: var(--toggle-bg); color: var(--text-main);
+      font-size: 0.7rem; border: none; cursor: pointer; display: grid; place-items: center;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .mini-tasbeeh:hover .mini-tasbeeh-close,
+    .mini-tasbeeh:focus-within .mini-tasbeeh-close { opacity: 1; }
+    @keyframes mini-pulse { 0% { box-shadow: 0 4px 20px rgba(212,175,55,0.4); } 50% { box-shadow: 0 4px 30px rgba(212,175,55,0.8); } 100% { box-shadow: 0 4px 20px rgba(212,175,55,0.4); } }
+    .mini-tasbeeh.goal-flash { animation: mini-pulse 0.5s ease 3; }
+    body.immersive-mode .mini-tasbeeh.bottom-right { bottom: 20px; }
 
     /* ========== RESUME TOAST ========== */
     .resume-toast {
@@ -674,7 +704,7 @@
     <div class="tutorial-step" data-step="3">
       <div class="tutorial-icon">&#128255;</div>
       <div class="tutorial-title">Compteur Tasbeeh</div>
-      <div class="tutorial-desc">Un compteur digital pour vos repetitions, avec vibration et presets personnalisables</div>
+      <div class="tutorial-desc">Compteur digital avec vibration et presets. Reduisez-le pour compter tout en lisant !</div>
     </div>
     <div class="tutorial-step" data-step="4">
       <div class="tutorial-icon">&#9776;</div>
@@ -814,6 +844,14 @@
       <input type="number" class="tasbeeh-custom" id="tasbeehCustom" placeholder="..." min="1" max="9999" aria-label="Objectif personnalise">
     </div>
     <button class="tasbeeh-reset" id="btnTasbeehReset" aria-label="Reinitialiser">&#8634; Reinitialiser</button>
+    <button class="tasbeeh-minimize" id="btnTasbeehMinimize">&#8595; Reduire &amp; lire</button>
+  </div>
+
+  <!-- MINI TASBEEH FLOTTANT -->
+  <div class="mini-tasbeeh bottom-right" id="miniTasbeeh" role="button" tabindex="0" aria-label="Compteur rapide">
+    <span class="mini-tasbeeh-count" id="miniTasbeehCount">0</span>
+    <span class="mini-tasbeeh-target" id="miniTasbeehTarget">/33</span>
+    <button class="mini-tasbeeh-close" id="miniTasbeehClose" aria-label="Fermer le mini compteur">&times;</button>
   </div>
 
   <!-- RESUME TOAST -->
@@ -1246,33 +1284,65 @@ function showBarsTemporarily() {
 }
 
 /* ===== TASBEEH ===== */
+var miniTasbeehPosition = 'bottom-right'; // or 'top-left'
+
 function openTasbeeh() {
+  hideMiniTasbeeh();
   document.getElementById('tasbeehOverlay').classList.add('open');
   syncTasbeeh();
 }
 function closeTasbeeh() {
   document.getElementById('tasbeehOverlay').classList.remove('open');
 }
+function minimizeTasbeeh() {
+  closeTasbeeh();
+  showMiniTasbeeh();
+}
+function showMiniTasbeeh() {
+  var mini = document.getElementById('miniTasbeeh');
+  mini.classList.remove('bottom-right', 'top-left');
+  mini.classList.add(miniTasbeehPosition, 'show');
+  syncMiniTasbeeh();
+}
+function hideMiniTasbeeh() {
+  document.getElementById('miniTasbeeh').classList.remove('show');
+}
+function toggleMiniPosition() {
+  miniTasbeehPosition = miniTasbeehPosition === 'bottom-right' ? 'top-left' : 'bottom-right';
+  var mini = document.getElementById('miniTasbeeh');
+  mini.classList.remove('bottom-right', 'top-left');
+  mini.classList.add(miniTasbeehPosition);
+}
 function incrementTasbeeh() {
   state.tasbeeh.count++;
   syncTasbeeh();
+  syncMiniTasbeeh();
   if (navigator.vibrate) navigator.vibrate(30);
-  if (state.tasbeeh.count >= state.tasbeeh.target) {
+  if (state.tasbeeh.count >= state.tasbeeh.target && state.tasbeeh.count % state.tasbeeh.target === 0) {
     if (navigator.vibrate) navigator.vibrate([50, 50, 50, 50, 50]);
-    document.getElementById('tasbeehCircle').classList.add('goal-reached');
-    setTimeout(function() { document.getElementById('tasbeehCircle').classList.remove('goal-reached'); }, 2000);
+    // Pulse overlay circle
+    var circle = document.getElementById('tasbeehCircle');
+    circle.classList.add('goal-reached');
+    setTimeout(function() { circle.classList.remove('goal-reached'); }, 2000);
+    // Pulse mini
+    var mini = document.getElementById('miniTasbeeh');
+    mini.classList.add('goal-flash');
+    setTimeout(function() { mini.classList.remove('goal-flash'); }, 2000);
   }
   saveState();
 }
+function incrementMiniTasbeeh(e) {
+  e.stopPropagation();
+  incrementTasbeeh();
+}
 function resetTasbeeh() {
   state.tasbeeh.count = 0;
-  syncTasbeeh(); saveState();
+  syncTasbeeh(); syncMiniTasbeeh(); saveState();
 }
 function setTasbeehTarget(t) {
   state.tasbeeh.target = Math.max(1, t);
   state.tasbeeh.count = 0;
-  syncTasbeeh(); saveState();
-  // Sync preset buttons
+  syncTasbeeh(); syncMiniTasbeeh(); saveState();
   var btns = document.querySelectorAll('#tasbeehPresets .speed-btn');
   btns.forEach(function(b) { b.classList.toggle('active', parseInt(b.dataset.target) === state.tasbeeh.target); });
 }
@@ -1281,6 +1351,10 @@ function syncTasbeeh() {
   document.getElementById('tasbeehTarget').textContent = '/ ' + state.tasbeeh.target;
   var btns = document.querySelectorAll('#tasbeehPresets .speed-btn');
   btns.forEach(function(b) { b.classList.toggle('active', parseInt(b.dataset.target) === state.tasbeeh.target); });
+}
+function syncMiniTasbeeh() {
+  document.getElementById('miniTasbeehCount').textContent = state.tasbeeh.count;
+  document.getElementById('miniTasbeehTarget').textContent = '/' + state.tasbeeh.target;
 }
 
 /* ===== RESUME TOAST ===== */
@@ -1521,6 +1595,20 @@ document.getElementById('tasbeehCustom').addEventListener('change', function() {
   var v = parseInt(this.value);
   if (v > 0) setTasbeehTarget(v);
 });
+document.getElementById('btnTasbeehMinimize').addEventListener('click', minimizeTasbeeh);
+document.getElementById('miniTasbeeh').addEventListener('click', incrementMiniTasbeeh);
+document.getElementById('miniTasbeehClose').addEventListener('click', function(e) { e.stopPropagation(); hideMiniTasbeeh(); });
+document.getElementById('miniTasbeeh').addEventListener('dblclick', function(e) { e.stopPropagation(); e.preventDefault(); openTasbeeh(); });
+// Long press to move position
+(function() {
+  var pressTimer = null;
+  var mini = document.getElementById('miniTasbeeh');
+  mini.addEventListener('touchstart', function(e) {
+    pressTimer = setTimeout(function() { toggleMiniPosition(); if (navigator.vibrate) navigator.vibrate(30); }, 600);
+  }, { passive: true });
+  mini.addEventListener('touchend', function() { clearTimeout(pressTimer); }, { passive: true });
+  mini.addEventListener('touchmove', function() { clearTimeout(pressTimer); }, { passive: true });
+})();
 
 // Resume toast
 document.getElementById('btnResumeYes').addEventListener('click', acceptResume);
